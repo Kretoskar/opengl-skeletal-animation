@@ -30,7 +30,7 @@ namespace HenioEditor.GameProject
     class NewProject : ViewModelBase
     {
         //TODO: Get path from installation
-        private readonly string _templatePath = @"..\..\HenioEditor\ProjectTemplates";
+        private readonly string _templatePath = @"..\..\HenioEditor\ProjectTemplates\";
         private string _projectName = "NewProject";
         private string _projectPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\HenioProject\";
 
@@ -42,6 +42,7 @@ namespace HenioEditor.GameProject
                 if (_projectName != value)
                 {
                     _projectName = value;
+                    ValidateProjectPath();
                     OnPropertyChanged(nameof(ProjectName));
                 }
             }
@@ -55,13 +56,83 @@ namespace HenioEditor.GameProject
                 if (_projectPath != value)
                 {
                     _projectPath = value;
+                    ValidateProjectPath();
                     OnPropertyChanged(nameof(ProjectPath));
+                }
+            }
+        }
+
+        private bool _isValid;
+
+        public bool IsVaLid
+        {
+            get => _isValid;
+            set
+            {
+                if (_isValid != value)
+                {
+                    _isValid = value;
+                    OnPropertyChanged(nameof(IsVaLid));
+                }
+            }
+        }
+
+        private string _errorMsg;
+        public string ErrorMsg
+        {
+            get => _errorMsg;
+            set
+            {
+                if (_errorMsg != value)
+                {
+                    _errorMsg = value;
+                    OnPropertyChanged(nameof(ErrorMsg));
                 }
             }
         }
 
         private ObservableCollection<ProjectTemplate> _projectTemplates = new ObservableCollection<ProjectTemplate>();
         public ReadOnlyObservableCollection<ProjectTemplate> ProjectTemplates { get; }
+
+        private bool ValidateProjectPath()
+        {
+            string path = ProjectPath;
+            if (!Path.EndsInDirectorySeparator(path))
+            {
+                path += @"\";
+            }
+
+            path += $@"{ProjectName}\";
+
+            IsVaLid = false;
+            if (string.IsNullOrWhiteSpace(ProjectName.Trim()))
+            {
+                ErrorMsg = "Project name is empty";
+            }
+            else if (ProjectName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1)
+            {
+                ErrorMsg = "Project name contains invalid character(s)";
+            }
+            else if (string.IsNullOrWhiteSpace(ProjectPath.Trim()))
+            {
+                ErrorMsg = "Path is empty";
+            }
+            else if (ProjectPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            {
+                ErrorMsg = "Project path contains invalid character(s)";
+            }
+            else if (Directory.Exists(path) && Directory.EnumerateFileSystemEntries(path).Any())
+            {
+                ErrorMsg = "Selected project folder already exists and is not empty";
+            }
+            else
+            {
+                ErrorMsg = string.Empty;
+                IsVaLid = true;
+            }
+
+            return IsVaLid;
+        }
 
         public NewProject()
         {
@@ -82,6 +153,8 @@ namespace HenioEditor.GameProject
 
                     _projectTemplates.Add(template);
                 }
+
+                ValidateProjectPath();
             }
             catch (Exception ex)
             {

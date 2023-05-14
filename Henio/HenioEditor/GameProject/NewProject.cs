@@ -32,7 +32,7 @@ namespace HenioEditor.GameProject
         //TODO: Get path from installation
         private readonly string _templatePath = @"..\..\HenioEditor\ProjectTemplates\";
         private string _projectName = "NewProject";
-        private string _projectPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\HenioProject\";
+        private string _projectPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\HenioProjects\";
 
         public string ProjectName
         {
@@ -132,6 +132,53 @@ namespace HenioEditor.GameProject
             }
 
             return IsVaLid;
+        }
+
+        public string CreateProject(ProjectTemplate template)
+        {
+            ValidateProjectPath();
+            if (!IsVaLid)
+            {
+                return string.Empty;
+            }
+
+            if (!Path.EndsInDirectorySeparator(ProjectPath))
+            {
+                ProjectPath += @"\";
+            }
+
+            string path = $@"{ProjectPath}{ProjectName}\";
+
+            try
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                foreach (var folder in template.Folders)
+                {
+                    Directory.CreateDirectory(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path), folder)));
+                }
+                var dirInfo = new DirectoryInfo(path + @".Henio\");
+                dirInfo.Attributes |= FileAttributes.Hidden;
+                File.Copy(template.IconFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Icon.png")));
+                File.Copy(template.IconFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Screenshot.png")));
+
+                var projectXml = File.ReadAllText(template.ProjectFilePath);
+                projectXml = string.Format(projectXml, ProjectName, ProjectPath);
+
+                var projectPath = Path.GetFullPath(Path.Combine(path, $"{ProjectName}{Project.Extension}"));
+                File.WriteAllText(projectPath, projectXml);
+
+                return path;
+            }
+            catch (Exception ex)
+            {
+                //TODO: Proper logging
+                Debug.WriteLine(ex.Message);
+                return string.Empty;
+            }
         }
 
         public NewProject()

@@ -132,7 +132,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="lib\glad.c" />
+    <ClCompile Include="lib\stb.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

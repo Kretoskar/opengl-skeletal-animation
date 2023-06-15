@@ -126,6 +126,7 @@ int main()
 	glDeleteShader(fragmentShaders[0]);
 	glDeleteShader(fragmentShaders[1]);
 
+	/*
 	float vertices[] =
 	{
 		0.5f, 0.5f, 0.0f,
@@ -138,6 +139,24 @@ int main()
 		0, 1, 2,
 		2, 3, 0
 	};
+	*/
+	float vertices[] =
+	{
+		-0.5f, -0.5f, 0.0f,
+		-0.25f, 0.5f, 0.0f,
+		-0.1f, -0.5f, 0.0f,
+
+		0.5f, -0.5f, 0.0f,
+		0.25f, 0.5f, 0.0f,
+		0.1f, -0.5f, 0.0f
+	};
+
+	uint32_t indices[] =
+	{
+		0, 1, 2,
+		3, 4, 5
+	};
+
 
 	// vao, vbo
 	uint32_t VAO, VBO, EBO;
@@ -179,6 +198,9 @@ int main()
 		glfwPollEvents();
 	}
 
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VAO);
+	glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 	return 0;

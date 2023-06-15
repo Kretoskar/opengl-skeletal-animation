@@ -136,6 +136,10 @@
     <ClCompile Include="lib\stb.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\fragment_core.glsl" />
+    <None Include="assets\vertex_core.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

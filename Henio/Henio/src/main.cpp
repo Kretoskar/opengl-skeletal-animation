@@ -9,9 +9,15 @@
 #include <stb/stb_image.h>
 
 #include "Rendering/Public/Shader.h"
+#include "Input/Public/Keyboard.h"
+#include "Input/Public/Mouse.h"
+#include "Input/Public/Gamepad.h"
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
+
+glm::mat4 transform = glm::mat4(1.0f);
+Gamepad mainGamepad(0);
 
 int main()
 {
@@ -48,6 +54,10 @@ int main()
 	// init callback for resizing
 	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
+	glfwSetKeyCallback(window, Keyboard::KeyCallback);
+	glfwSetMouseButtonCallback(window, Mouse::MouseButtonCallback);
+	glfwSetScrollCallback(window, Mouse::MouseWheelCallback);
+	
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 	
 	constexpr float vertices[] =
@@ -119,14 +129,19 @@ int main()
 	}
 
 	stbi_image_free(data);
-
-	glm::mat4 trans = glm::mat4(1.0f);
-	trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	trans = glm::scale(trans, glm::vec3(1.5f));
-	shader.setMat4("transform", trans);
 	
-	shader.activate();
-	shader.setInt("texture1", 0);
+	shader.Activate();
+	shader.SetInt("texture1", 0);
+
+	mainGamepad.Update();
+	if (mainGamepad.IsPresent())
+	{
+		std::cout << mainGamepad.GetName() << " is present." << std::endl;
+	}
+	else
+	{
+		std::cout << "Gamepad not present" << std::endl;
+	}
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -140,10 +155,9 @@ int main()
 
 
 		glBindVertexArray(VAO);
-		trans = glm::rotate(trans, glm::radians(static_cast<float>(glfwGetTime()) / 100), glm::vec3(0.0f, 0.0f, 1.0f));
 		
-		shader.activate();
-		shader.setMat4("transform", trans);
+		shader.Activate();
+		shader.SetMat4("transform", transform);
 
 		//draw shapes
 
@@ -173,8 +187,46 @@ void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 
 void processInput(GLFWwindow* window)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	if (Keyboard::Key(GLFW_KEY_ESCAPE))
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
+
+	/*
+	if (Keyboard::Key(GLFW_KEY_UP))
+	{
+		transform = glm::translate(transform, glm::vec3(0.0f, 0.1f, 0.0f));
+	}
+
+	if (Keyboard::Key(GLFW_KEY_DOWN))
+	{
+		transform = glm::translate(transform, glm::vec3(0.0f, -0.1f, 0.0f));
+	}
+
+	if (Keyboard::Key(GLFW_KEY_LEFT))
+	{
+		transform = glm::translate(transform, glm::vec3(-0.1f, 0, 0.0f));
+	}
+
+	if (Keyboard::Key(GLFW_KEY_RIGHT))
+	{
+		transform = glm::translate(transform, glm::vec3(0.1f, 0.0f, 0.0f));
+	}
+	*/
+
+	
+	float lx = mainGamepad.AxisState(GLFW_JOYSTICK_AXES_LEFT_STICK_X);
+	float ly = -mainGamepad.AxisState(GLFW_JOYSTICK_AXES_LEFT_STICK_Y);
+
+	if (std::abs(lx) > 0.5f)
+	{
+		transform = glm::translate(transform, glm::vec3(lx / 10, 0.0f, 0.0f));
+	}
+
+	if (std::abs(ly) > 0.5f)
+	{
+		transform = glm::translate(transform, glm::vec3(0.0f, ly / 10, 0.0f));
+	}
+	
+	mainGamepad.Update();
 }

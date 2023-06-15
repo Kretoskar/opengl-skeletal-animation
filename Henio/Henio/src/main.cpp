@@ -5,6 +5,9 @@
 #include <sstream>
 #include <streambuf>
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -185,6 +188,11 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	glUseProgram(shaderPrograms[0]);
+	glUniformMatrix4fv(glGetUniformLocation(shaderPrograms[0], "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -192,13 +200,15 @@ int main()
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		trans = glm::rotate(trans, glm::radians((float)glfwGetTime() / 100), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shaderPrograms[0], "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
 		//draw shapes
 		glBindVertexArray(VAO);
 
 		glUseProgram(shaderPrograms[0]);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
-		glUseProgram(shaderPrograms[1]);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(3 * sizeof(unsigned int)));
 
 		// swap color buffer used to render this render iteration

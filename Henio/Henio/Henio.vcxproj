@@ -108,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\_Projekty\HenioGameEngine\Henio\Henio\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,12 +135,16 @@
   <ItemGroup>
     <ClCompile Include="lib\glad.c" />
     <ClCompile Include="lib\stb.cpp" />
+    <ClCompile Include="src\Rendering\Private\Shader.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\fragment_core.glsl" />
     <None Include="assets\fragment_core2.glsl" />
     <None Include="assets\vertex_core.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Rendering\Public\Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

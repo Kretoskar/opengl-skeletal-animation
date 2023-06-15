@@ -9,15 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Rendering/Public/Shader.h"
+
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-std::string loadShaderSrc(const char* fileName);
 
 int main()
 {
-	int success;
-	char infoLog[512];
-
 	glfwInit();
 
 	// using 3.3 as it's the doc supported version
@@ -26,8 +24,8 @@ int main()
 
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	const uint16_t windowWidth = 800;
-	const uint16_t windowHeight = 600;
+	constexpr uint16_t windowWidth = 800;
+	constexpr uint16_t windowHeight = 600;
 
 	// make window
 	GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Henio", nullptr, nullptr);
@@ -51,98 +49,8 @@ int main()
 	// init callback for resizing
 	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
-	// compile vert shader
-	const uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	std::string vertexShaderSrc = loadShaderSrc("assets/vertex_core.glsl");
-	const GLchar* vertShader = vertexShaderSrc.c_str();
-	glShaderSource(vertexShader, 1, &vertShader, nullptr);
-	glCompileShader(vertexShader);
-
-	// catch vert error
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-		std::cout << "Vertex shader error: " << infoLog << std::endl;
-	}
-
-	// copile frag shaders
-	uint32_t fragmentShaders[2];
-
-	fragmentShaders[0] = glCreateShader(GL_FRAGMENT_SHADER);
-	std::string fragmentShaderSrc = loadShaderSrc("assets/fragment_core.glsl");
-	const GLchar* fragShader = fragmentShaderSrc.c_str();
-	glShaderSource(fragmentShaders[0], 1, &fragShader, nullptr);
-	glCompileShader(fragmentShaders[0]);
-
-	// catch frag error
-	glGetShaderiv(fragmentShaders[0], GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShaders[0], 512, nullptr, infoLog);
-		std::cout << "Fragment shader error: " << infoLog << std::endl;
-	}
-
-	fragmentShaders[1] = glCreateShader(GL_FRAGMENT_SHADER);
-	fragmentShaderSrc = loadShaderSrc("assets/fragment_core2.glsl");
-	fragShader = fragmentShaderSrc.c_str();
-	glShaderSource(fragmentShaders[1], 1, &fragShader, nullptr);
-	glCompileShader(fragmentShaders[1]);
-
-	// catch frag error
-	glGetShaderiv(fragmentShaders[1], GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShaders[1], 512, nullptr, infoLog);
-		std::cout << "Fragment shader error: " << infoLog << std::endl;
-	}
-
-	//create program
-	uint32_t shaderPrograms[2];
-	shaderPrograms[0] = glCreateProgram();
-	glAttachShader(shaderPrograms[0], vertexShader);
-	glAttachShader(shaderPrograms[0], fragmentShaders[0]);
-	glLinkProgram(shaderPrograms[0]);
-
-	//catch linking errors
-	glGetProgramiv(shaderPrograms[0], GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(shaderPrograms[0], 512, nullptr, infoLog);
-		std::cout << "Linking shaders error: " << infoLog << std::endl;
-	}
-
-	shaderPrograms[1] = glCreateProgram();
-	glAttachShader(shaderPrograms[1], vertexShader);
-	glAttachShader(shaderPrograms[1], fragmentShaders[1]);
-	glLinkProgram(shaderPrograms[1]);
-
-	//catch linking errors
-	glGetProgramiv(shaderPrograms[1], GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(shaderPrograms[1], 512, nullptr, infoLog);
-		std::cout << "Linking shaders error: " << infoLog << std::endl;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShaders[0]);
-	glDeleteShader(fragmentShaders[1]);
-
-	/*
-	float vertices[] =
-	{
-		0.5f, 0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-	};
-	uint32_t indices[] =
-	{
-		0, 1, 2,
-		2, 3, 0
-	};
-	*/
+	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
+	
 	float vertices[] =
 	{
 		//vertices				colors
@@ -190,8 +98,10 @@ int main()
 
 	glm::mat4 trans = glm::mat4(1.0f);
 	trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	glUseProgram(shaderPrograms[0]);
-	glUniformMatrix4fv(glGetUniformLocation(shaderPrograms[0], "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+
+	shader.activate();
+	shader.setMat4("transform", trans);
+
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -201,14 +111,14 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		trans = glm::rotate(trans, glm::radians((float)glfwGetTime() / 100), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(glGetUniformLocation(shaderPrograms[0], "transform"), 1, GL_FALSE, glm::value_ptr(trans));
+		
+		shader.activate();
+		shader.setMat4("transform", trans);
 
 		//draw shapes
 		glBindVertexArray(VAO);
 
-		glUseProgram(shaderPrograms[0]);
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-
 		glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(3 * sizeof(unsigned int)));
 
 		// swap color buffer used to render this render iteration
@@ -237,28 +147,4 @@ void processInput(GLFWwindow* window)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
-}
-
-std::string loadShaderSrc(const char* fileName)
-{
-	std::ifstream file;
-	std::stringstream buf;
-
-	std::string ret = "";
-
-	file.open(fileName);
-
-	if (file.is_open())
-	{
-		buf << file.rdbuf();
-		ret = buf.str();
-	}
-	else
-	{
-		std::cout << "Couldn't open file: " << fileName << std::endl;
-	}
-
-	file.close();
-
-	return ret;
 }

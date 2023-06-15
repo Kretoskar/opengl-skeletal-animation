@@ -146,6 +146,9 @@
   <ItemGroup>
     <ClInclude Include="src\Rendering\Public\Shader.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\fucking_sneaky_cat.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

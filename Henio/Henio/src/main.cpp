@@ -142,19 +142,17 @@ int main()
 	*/
 	float vertices[] =
 	{
-		-0.5f, -0.5f, 0.0f,
-		-0.25f, 0.5f, 0.0f,
-		-0.1f, -0.5f, 0.0f,
-
-		0.5f, -0.5f, 0.0f,
-		0.25f, 0.5f, 0.0f,
-		0.1f, -0.5f, 0.0f
+		//vertices				colors
+		-0.25f, -0.5f, 0.0f,	1.0f, 1.0f, 0.5f,
+		0.15f, 0.0f, 0.0f,		0.5f, 1.0f, 0.75f,
+		0.0f, 0.5f, 0.0f,		0.6f, 1.0f, 0.2f,
+		0.5f, -0.4f, 0.0f,		1.0f, 0.2f, 1.0f
 	};
 
 	uint32_t indices[] =
 	{
 		0, 1, 2,
-		3, 4, 5
+		3, 1, 2
 	};
 
 
@@ -168,8 +166,20 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	// set attribute pointer
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// set attribute pointers
+
+	//positions
+	glVertexAttribPointer(
+		/*attrib index*/0, 
+		/*size (count)*/3, 
+		/*type*/GL_FLOAT,
+		/*normalised*/GL_FALSE, 
+		/*stride (bits to move from one value to next)*/6 * sizeof(float), 
+		/*ptr*/(void*)0);
+	glEnableVertexAttribArray(1);
+
+	//color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

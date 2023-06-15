@@ -120,10 +120,10 @@ int main()
 
 	stbi_image_free(data);
 
-//	glm::mat4 trans = glm::mat4(1.0f);
-//	trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-//	trans = glm::scale(trans, glm::vec3(1.5f));
-//	shader.setMat4("transform", trans);
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	trans = glm::scale(trans, glm::vec3(1.5f));
+	shader.setMat4("transform", trans);
 	
 	shader.activate();
 	shader.setInt("texture1", 0);
@@ -140,10 +140,10 @@ int main()
 
 
 		glBindVertexArray(VAO);
-	//	trans = glm::rotate(trans, glm::radians(static_cast<float>(glfwGetTime()) / 100), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::rotate(trans, glm::radians(static_cast<float>(glfwGetTime()) / 100), glm::vec3(0.0f, 0.0f, 1.0f));
 		
 		shader.activate();
-//		shader.setMat4("transform", trans);
+		shader.setMat4("transform", trans);
 
 		//draw shapes
 

@@ -15,8 +15,11 @@ class Shader
 	uint32_t id;
 
 public:
+	Shader();
 	Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
 
+	void Generate(const char* vertexShaderPath, const char* fragmentShaderPath);
+	
 	static GLuint CompileShader(const char* filepath, GLenum type);
 	static std::string LoadShaderSrc(const char* filepath);
 	

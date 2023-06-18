@@ -60,6 +60,11 @@ void Camera::UpdateCameraFov(double dy)
     fov = glm::clamp(fov, 1.0f, 45.0f);
 }
 
+float Camera::GetFov()
+{
+    return fov;
+}
+
 glm::mat4 Camera::GetViewMatrix()
 {
     return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);

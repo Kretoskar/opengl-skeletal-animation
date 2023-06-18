@@ -17,6 +17,19 @@ enum class CameraDirection
 class Camera
 {
 public:
+    Camera(glm::vec3 position);
+
+    void UpdateCameraDirection(double dx, double dy);
+    void UpdateCameraPosition(CameraDirection cameraDirection, double deltaTime);
+    void UpdateCameraFov(double dy);
+
+    float GetFov();
+
+    glm::mat4 GetViewMatrix();
+
+private:
+    void UpdateCameraVectors();
+
     // TODO: this should be in a transform component
     glm::vec3 cameraPos;
 
@@ -31,15 +44,4 @@ public:
     
     float speed;
     float fov;
-
-    Camera(glm::vec3 position);
-
-    void UpdateCameraDirection(double dx, double dy);
-    void UpdateCameraPosition(CameraDirection cameraDirection, double deltaTime);
-    void UpdateCameraFov(double dy);
-
-    glm::mat4 GetViewMatrix();
-
-private:
-    void UpdateCameraVectors();
 };

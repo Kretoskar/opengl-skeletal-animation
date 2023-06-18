@@ -1,6 +1,15 @@
 #include "Rendering/Public/Shader.h"
 
+Shader::Shader()
+{
+}
+
 Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+{
+    Generate(vertexShaderPath, fragmentShaderPath);
+}
+
+void Shader::Generate(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
     int32_t success;
 

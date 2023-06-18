@@ -12,15 +12,20 @@
 #include "Input/Public/Keyboard.h"
 #include "Input/Public/Mouse.h"
 #include "Input/Public/Gamepad.h"
+#include "Components/Public/Camera.h"
 
 void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, double deltaTime);
 
-glm::mat4 transform = glm::mat4(1.0f);
 Gamepad mainGamepad(0);
 
 uint16_t SCR_WIDTH = 800;
 uint16_t SCR_HEIGHT = 600;
+
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
 
 float x, y, z;
 
@@ -58,6 +63,9 @@ int main()
 	glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
 
 	glfwSetKeyCallback(window, Keyboard::KeyCallback);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, Mouse::CursorPoseCallback);
 	glfwSetMouseButtonCallback(window, Mouse::MouseButtonCallback);
 	glfwSetScrollCallback(window, Mouse::MouseWheelCallback);
 
@@ -160,7 +168,6 @@ int main()
 	
 	shader.Activate();
 	shader.SetInt("texture1", 0);
-	shader.SetMat4("transform", transform);
 
 	mainGamepad.Update();
 	if (mainGamepad.IsPresent())
@@ -178,7 +185,11 @@ int main()
 	
 	while (!glfwWindowShouldClose(window))
 	{
-		processInput(window);
+		double currentTime = glfwGetTime();
+		deltaTime = currentTime - lastFrame;
+		lastFrame = currentTime;
+		
+		processInput(window, deltaTime);
 
 		glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -194,8 +205,9 @@ int main()
 		glm::mat4 projection = glm::mat4(1.0f);
 		
 		model = glm::rotate(model, static_cast<float>(glfwGetTime()) * glm::radians(-55.0f), glm::vec3(0.5f));
-		view = glm::translate(view, glm::vec3(-x, -y, -z));
-		projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
+		//view = glm::translate(view, glm::vec3(-x, -y, -z));
+		view = camera.GetViewMatrix();
+		projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
 		
 		shader.Activate();
 
@@ -228,30 +240,55 @@ void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
 	SCR_HEIGHT = height;
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, double deltaTime)
 {
 	if (Keyboard::Key(GLFW_KEY_ESCAPE))
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	if (Keyboard::Key(GLFW_KEY_UP))
+	// move camera
+	if (Keyboard::Key(GLFW_KEY_W))
 	{
-		y += 0.01f;
+		camera.UpdateCameraPosition(CameraDirection::FORWARD, deltaTime);
 	}
 
-	if (Keyboard::Key(GLFW_KEY_DOWN))
+	if (Keyboard::Key(GLFW_KEY_S))
 	{
-		y -= 0.01f;
+		camera.UpdateCameraPosition(CameraDirection::BACKWARD, deltaTime);
 	}
 
-	if (Keyboard::Key(GLFW_KEY_LEFT))
+	if (Keyboard::Key(GLFW_KEY_A))
 	{
-		x -= 0.01f;
+		camera.UpdateCameraPosition(CameraDirection::LEFT, deltaTime);
 	}
 
-	if (Keyboard::Key(GLFW_KEY_RIGHT))
+	if (Keyboard::Key(GLFW_KEY_D))
 	{
-		x += 0.01f;
+		camera.UpdateCameraPosition(CameraDirection::RIGHT, deltaTime);
+	}
+
+	if (Keyboard::Key(GLFW_KEY_SPACE))
+	{
+		camera.UpdateCameraPosition(CameraDirection::UP, deltaTime);
+	}
+
+	if (Keyboard::Key(GLFW_KEY_LEFT_SHIFT))
+	{
+		camera.UpdateCameraPosition(CameraDirection::DOWN, deltaTime);
+	}
+
+	double dx = Mouse::GetMouseDeltaX() / 50;
+	double dy = Mouse::GetMouseDeltaY() / 50;
+
+	if (glm::abs(dx) > glm::epsilon<double>() || glm::abs(dy) > glm::epsilon<double>())
+	{
+		camera.UpdateCameraDirection(dx, dy);
+	}
+
+	double scrollDy = Mouse::GetScrollDeltaY();
+	if (glm::abs(scrollDy) > glm::epsilon<double>())
+	{
+		camera.UpdateCameraFov(scrollDy);
 	}
 }

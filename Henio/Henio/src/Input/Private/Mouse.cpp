@@ -11,7 +11,7 @@ double Mouse::deltaY = 0;
 double Mouse::scrollDeltaX = 0;
 double Mouse::scrollDeltaY = 0;
 
-bool Mouse::firstMouse = 0;
+bool Mouse::firstMouse = true;
 
 bool Mouse::buttons[GLFW_MOUSE_BUTTON_LAST] = { false };
 bool Mouse::buttonsChanged[GLFW_MOUSE_BUTTON_LAST] = { false };

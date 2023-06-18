@@ -13,6 +13,8 @@ Texture::Texture()
 Texture::Texture(const char* path, const char* name, bool defaultParams)
     : id(currentId++), name(name), path(path)
 {
+    Generate();
+    
     if (defaultParams)
     {
         SetFilters(GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);

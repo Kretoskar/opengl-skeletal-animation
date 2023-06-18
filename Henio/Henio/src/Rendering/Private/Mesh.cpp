@@ -89,7 +89,7 @@ void Mesh::Setup()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>((offsetof(Vertex, normal))));
     
     //vertex.texcoord
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>((offsetof(Vertex, texCoord))));
 
     glBindVertexArray(0);

@@ -71,7 +71,7 @@ public:
             indices[i] = i;
         }
 
-        Texture texture1("assets/kotchuj.jpg", "texture1");
+        Texture texture1("assets/kotchuj.jpg", "material.diffuse");
         texture1.Load();
 	
         meshes.push_back(Mesh(Vertex::GenerateList(vertices, nVertices), indices, {texture1}));
@@ -85,7 +85,7 @@ public:
         shader.SetMat4("model", model);
 
         shader.Set3Float("material.ambient", material.ambient);
-        shader.Set3Float("material.diffuse", material.diffuse);
+        //shader.Set3Float("material.diffuse", material.diffuse);
         shader.Set3Float("material.specular", material.specular);
         shader.SetFloat("material.shininess", material.shininess);
 

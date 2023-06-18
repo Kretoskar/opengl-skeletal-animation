@@ -33,7 +33,7 @@ Mesh::Mesh()
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures)
     : vertices(vertices), indices(indices), textures(textures)
 {
-    Setup();3
+    Setup();
 }
 
 void Mesh::Render(Shader shader)

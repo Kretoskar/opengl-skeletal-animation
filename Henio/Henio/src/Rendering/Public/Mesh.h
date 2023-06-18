@@ -9,6 +9,7 @@
 struct Vertex
 {
     glm::vec3 pos;
+    glm::vec3 normal;
     glm::vec2 texCoord;
 
     static std::vector<Vertex> GenerateList(float* vertices, int nVertices);

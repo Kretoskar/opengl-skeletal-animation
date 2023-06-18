@@ -16,8 +16,8 @@
 #include "Output/Public/Screen.h"
 #include "Rendering/Public/Texture.h"
 #include "Rendering/Models/Public/Cube.hpp"
+#include "Rendering/Models/Public/Lamp.hpp"
 
-void frameBufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(double deltaTime);
 
 Gamepad mainGamepad(0);
@@ -59,10 +59,14 @@ int main()
 	screen.SetParameters();
 	
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
+	Shader lampShader("assets/vertex_core.glsl", "assets/lamp.glsl");
 
-	Cube cube(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
+	Cube cube(Material::emerald, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
 	cube.Init();
 
+	Lamp lamp(glm::vec3(-1.0f, -0.5f, -0.5f), glm::vec3(0.25f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
+	lamp.Init();
+	
 	mainGamepad.Update();
 	if (mainGamepad.IsPresent())
 	{
@@ -84,6 +88,12 @@ int main()
 		screen.Update();
 		
 		shader.Activate();
+		shader.Set3Float("light.position", lamp.pos);
+		shader.Set3Float("viewPos", camera.cameraPos);
+
+		shader.Set3Float("light.ambient", lamp.ambient);
+		shader.Set3Float("light.diffuse", lamp.diffuse);
+		shader.Set3Float("light.specular", lamp.specular);
 		
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);
@@ -96,19 +106,20 @@ int main()
 		shader.SetMat4("projection", projection);
 
 		cube.Render(shader);
+
+		lampShader.Activate();
+		lampShader.SetMat4("view", view);
+		lampShader.SetMat4("projection", projection);
+		lamp.Render(lampShader);
 		
 		screen.NewFrame();
 	}
 
+	cube.Cleanup();
+	lamp.Cleanup();
+	
 	glfwTerminate();
 	return 0;
-}
-
-void frameBufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-	SCR_WIDTH = width;
-	SCR_HEIGHT = height;
 }
 
 void processInput(double deltaTime)

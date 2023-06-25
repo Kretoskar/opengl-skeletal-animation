@@ -10,7 +10,7 @@ public:
     
     Lamp(const glm::vec3& pos, const glm::vec3& size, const glm::vec3& lightColor,
         const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular)
-        : Cube(Material::white_plastic, pos, size),
+        : Cube(pos, size),
           lightColor(lightColor),
           pointLight({pos, 1.0f, 0.07f, 0.032f, ambient, diffuse, specular})
     {

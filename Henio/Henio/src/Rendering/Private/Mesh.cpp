@@ -44,11 +44,25 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vec
 
 void Mesh::Render(Shader shader)
 {
-    // texture
-    for (uint16_t i = 0; i < textures.size(); i++)
+    uint32_t diffuseIdx = 0;
+    uint32_t specularIdx = 0;
+
+    for (uint32_t i = 0; i < textures.size(); i++)
     {
-        shader.SetInt(textures[i].name, textures[i].id);
         glActiveTexture(GL_TEXTURE0 + i);
+        
+        std::string name;
+        switch (textures[i].type) {
+            case aiTextureType_DIFFUSE:
+                name = "diffuse" + std::to_string(diffuseIdx++);
+                break;
+            case aiTextureType_SPECULAR:
+                name = "specular" + std::to_string(specularIdx++);
+                break;
+            default: ;
+        }
+
+        shader.SetInt(name, i);
         textures[i].Bind();
     }
 

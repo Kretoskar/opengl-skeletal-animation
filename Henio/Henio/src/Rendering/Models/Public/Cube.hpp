@@ -8,14 +8,9 @@ class Cube : public Model
 public:
     
     Material material;
-    
-    glm::vec3 pos;
-    glm::vec3 size;
 
-    Cube() {}
-    
-    Cube(Material material, glm::vec3 pos, glm::vec3 size)
-        : material(material), pos(pos), size(size) {}
+    Cube(glm::vec3 pos = glm::vec3(0.0f), glm::vec3 size = glm::vec3(1.0f))
+        : Model(pos, size) {}
 
     void Init() override
     {
@@ -73,26 +68,13 @@ public:
             indices[i] = i;
         }
 
+        /*
         Texture texture1("assets/kotchuj.jpg", "material.diffuse");
         texture1.Load();
         Texture texture1Spec("assets/kotchuj_specular.jpg", "material.specular");
         texture1Spec.Load();
-	
-        meshes.push_back(Mesh(Vertex::GenerateList(vertices, nVertices), indices, {texture1, texture1Spec}));
-    }
+	    */
 
-    void Render(Shader shader) override
-    {
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, pos);
-        model = glm::scale(model, size);
-        shader.SetMat4("model", model);
-
-        shader.Set3Float("material.ambient", material.ambient);
-        //shader.Set3Float("material.diffuse", material.diffuse);
-        //shader.Set3Float("material.specular", material.specular);
-        shader.SetFloat("material.shininess", material.shininess);
-
-        Model::Render(shader);
+        meshes.push_back(Mesh(Vertex::GenerateList(vertices, nVertices), indices));
     }
 };

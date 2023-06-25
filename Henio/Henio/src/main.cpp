@@ -61,23 +61,8 @@ int main()
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 	Shader lampShader("assets/vertex_core.glsl", "assets/lamp.glsl");
 
-	Cube cubes[10];
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-	for (unsigned int i = 0; i < 10; i++) {
-		cubes[i] = Cube(Material::chrome, cubePositions[i], glm::vec3(1.0f));
-		cubes[i].Init();
-	}
+	Model model(glm::vec3(0, 0, -5), glm::vec3(0.05f));
+	model.LoadModel("assets/models/troll/scene.gltf");
 
 	Lamp lamps[4];
 	glm::vec3 pointLightPositions[] = {
@@ -142,10 +127,7 @@ int main()
 		shader.SetMat4("view", view);
 		shader.SetMat4("projection", projection);
 		
-		for (auto& cube : cubes)
-		{
-			cube.Render(shader);
-		}
+		model.Render(shader);
 
 		lampShader.Activate();
 		lampShader.SetMat4("view", view);
@@ -159,10 +141,7 @@ int main()
 		screen.NewFrame();
 	}
 
-	for (auto& cube : cubes)
-	{
-		cube.Cleanup();
-	}
+	model.Cleanup();
 
 	for (auto& lamp : lamps)
 	{

@@ -25,7 +25,7 @@ public:
     std::vector<Texture> textures;
 
     Mesh();
-    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures = {});
 
     void Render(Shader shader);
     void Cleanup();

@@ -3,8 +3,8 @@
 struct Material
 {
 	vec3 ambient;
-	sampler2D diffuse;
-	sampler2D specular;
+	vec3 diffuse;
+	vec3 specular;
 	float shininess;
 };
 
@@ -51,6 +51,9 @@ in vec2 TexCoord;
 
 //uniform sampler2D texture1;
 
+uniform sampler2D diffuse0;
+uniform sampler2D specular0;
+
 uniform Material material;
 
 uniform DirLight dirLight;
@@ -73,8 +76,8 @@ void main()
 {
 	vec3 norm = normalize(Normal);
 	vec3 viewDir = normalize(viewPos - FragPos);
-	vec3 diffMap = vec3(texture(material.diffuse, TexCoord));
-	vec3 specMap = vec3(texture(material.specular, TexCoord));
+	vec3 diffMap = vec3(texture(diffuse0, TexCoord));
+	vec3 specMap = vec3(texture(specular0, TexCoord));
 	
 	vec3 result;
 	

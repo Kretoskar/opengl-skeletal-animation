@@ -88,12 +88,9 @@ int main()
 		screen.Update();
 		
 		shader.Activate();
-		shader.Set3Float("light.position", lamp.pos);
 		shader.Set3Float("viewPos", camera.cameraPos);
 
-		shader.Set3Float("light.ambient", lamp.ambient);
-		shader.Set3Float("light.diffuse", lamp.diffuse);
-		shader.Set3Float("light.specular", lamp.specular);
+		lamp.pointLight.Render(shader);
 		
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);

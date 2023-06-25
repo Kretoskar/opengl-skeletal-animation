@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cube.hpp"
+#include "Rendering/Public/Light.h"
 
 class Lamp : public Cube
 {
@@ -9,9 +10,7 @@ public:
         const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular)
         : Cube(Material::white_plastic, pos, size),
           lightColor(lightColor),
-          ambient(ambient),
-          diffuse(diffuse),
-          specular(specular)
+          pointLight({pos, ambient, diffuse, specular})
     {
     }
 
@@ -24,8 +23,5 @@ public:
     
     glm::vec3 lightColor;
 
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    
+    PointLight pointLight;
 };

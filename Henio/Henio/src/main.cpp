@@ -68,6 +68,13 @@ int main()
 
 	Lamp lamp(glm::vec3(-1.0f, -0.5f, -0.5f), glm::vec3(0.25f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lamp.Init();
+
+	SpotLight spotLight =
+		{
+			camera.cameraPos, camera.cameraFront,
+			glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
+			glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f)
+		};
 	
 	mainGamepad.Update();
 	if (mainGamepad.IsPresent())
@@ -92,8 +99,12 @@ int main()
 		shader.Activate();
 		shader.Set3Float("viewPos", camera.cameraPos);
 
-		dirLight.Render(shader);
+	//	dirLight.Render(shader);
 	//	lamp.pointLight.Render(shader);
+
+		spotLight.position = camera.cameraPos;
+		spotLight.direction = camera.cameraFront;
+		spotLight.Render(shader);
 		
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);

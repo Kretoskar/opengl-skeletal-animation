@@ -2,9 +2,19 @@
 
 void PointLight::Render(Shader shader)
 {
-    std::string name = "pointLight";
+    const std::string name = "pointLight";
     
     shader.Set3Float(name + ".position", position);
+    shader.Set3Float(name + ".ambient", ambient);
+    shader.Set3Float(name + ".diffuse", diffuse);
+    shader.Set3Float(name + ".specular", specular);
+}
+
+void DirLight::Render(Shader shader)
+{
+    const std::string name = "dirLight";
+    
+    shader.Set3Float(name + ".direction", direction);
     shader.Set3Float(name + ".ambient", ambient);
     shader.Set3Float(name + ".diffuse", diffuse);
     shader.Set3Float(name + ".specular", specular);

@@ -15,8 +15,13 @@ struct PointLight
     void Render(Shader shader);
 };
 
-class Light
+struct DirLight
 {
-public:
-    
+    glm::vec3 direction;
+
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    void Render(Shader shader);
 };

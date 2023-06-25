@@ -64,6 +64,8 @@ int main()
 	Cube cube(Material::emerald, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.75f));
 	cube.Init();
 
+	DirLight dirLight = {glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.1f), glm::vec3(0.4f), glm::vec3(0.75f)};
+
 	Lamp lamp(glm::vec3(-1.0f, -0.5f, -0.5f), glm::vec3(0.25f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::vec3(1.0f));
 	lamp.Init();
 	
@@ -79,7 +81,7 @@ int main()
 	
 	while (!screen.ShouldClose())
 	{
-		double currentTime = glfwGetTime();
+		const double currentTime = glfwGetTime();
 		deltaTime = currentTime - lastFrame;
 		lastFrame = currentTime;
 		
@@ -90,7 +92,8 @@ int main()
 		shader.Activate();
 		shader.Set3Float("viewPos", camera.cameraPos);
 
-		lamp.pointLight.Render(shader);
+		dirLight.Render(shader);
+	//	lamp.pointLight.Render(shader);
 		
 		// create transformation for screen
 		glm::mat4 view = glm::mat4(1.0f);

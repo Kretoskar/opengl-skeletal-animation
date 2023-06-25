@@ -71,7 +71,7 @@ int main()
 
 	SpotLight spotLight =
 		{
-			camera.cameraPos, camera.cameraFront,
+			camera.cameraPos, camera.cameraFront, 1.0f, 0.07f, 0.032f,
 			glm::cos(glm::radians(12.5f)), glm::cos(glm::radians(20.0f)),
 			glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(1.0f)
 		};
@@ -101,7 +101,8 @@ int main()
 
 	//	dirLight.Render(shader);
 	//	lamp.pointLight.Render(shader);
-
+		//lamp.Render(shader);
+		
 		spotLight.position = camera.cameraPos;
 		spotLight.direction = camera.cameraFront;
 		spotLight.Render(shader);

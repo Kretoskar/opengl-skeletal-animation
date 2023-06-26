@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Rendering/Public/AssimpHelper.h"
+
 Model::Model(glm::vec3 pos, glm::vec3 size)
     : pos(pos), size(size) {}
 
@@ -13,6 +15,7 @@ void Model::LoadModel(std::string path)
 {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    AssimpHelper::ParseScene(scene);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {

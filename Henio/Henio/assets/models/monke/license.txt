@@ -1,0 +1,11 @@
+Model Information:
+* title:	Simio Monkey dancing
+* source:	https://sketchfab.com/3d-models/simio-monkey-dancing-3ba199e0a78546598f868e86d78495a0
+* author:	pepetrincado (https://sketchfab.com/pepetrincado)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Simio Monkey dancing" (https://sketchfab.com/3d-models/simio-monkey-dancing-3ba199e0a78546598f868e86d78495a0) by pepetrincado (https://sketchfab.com/pepetrincado) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -505,6 +505,7 @@
       <AdditionalIncludeDirectories>C:\_Projekty\HenioGameEngine\Henio\Henio\src;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="src\Rendering\Private\AssimpHelper.cpp" />
     <ClCompile Include="src\Rendering\Private\Light.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -890,6 +891,7 @@
     <ClInclude Include="src\Output\Public\Screen.h" />
     <ClInclude Include="src\Rendering\Models\Public\Cube.hpp" />
     <ClInclude Include="src\Rendering\Models\Public\Lamp.hpp" />
+    <ClInclude Include="src\Rendering\Public\AssimpHelper.h" />
     <ClInclude Include="src\Rendering\Public\Light.h" />
     <ClInclude Include="src\Rendering\Public\Material.h" />
     <ClInclude Include="src\Rendering\Public\Mesh.h" />

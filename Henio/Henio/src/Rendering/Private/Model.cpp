@@ -41,8 +41,8 @@ Mesh::Mesh()
 {
 }
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures)
-    : vertices(vertices), indices(indices), textures(textures)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<VertexBoneData> bones, std::vector<Texture> textures)
+    : vertices(vertices), indices(indices), bones(bones), textures(textures)
 {
     Setup();
 }
@@ -111,9 +111,30 @@ void Mesh::Setup()
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>((offsetof(Vertex, texCoord))));
 
+    glGenBuffers(1, &boneBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, boneBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(bones[0]) * bones.size(), &bones[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(3);
+    glVertexAttribIPointer(3, MAX_NUM_BONES_PER_VERTEX, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, MAX_NUM_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)(MAX_NUM_BONES_PER_VERTEX * sizeof(int32_t)));
+
     glBindVertexArray(0);
 }
 
+
+void VertexBoneData::AddBoneData(uint32_t boneId, float weight)
+{
+    for (uint32_t i = 0; i < std::size(boneIds); i++)
+    {
+        if (weights[i] == 0.0f)
+        {
+            boneIds[i] = boneId;
+            weights[i] = weight;
+            return;
+        }
+    }
+}
 
 Model::Model(glm::vec3 pos, glm::vec3 size)
     : pos(pos), size(size) {}
@@ -139,7 +160,7 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
     for (uint32_t i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(ProcessMesh(mesh, scene));
+        meshes.push_back(ProcessMesh(mesh, scene, i));
     }
 
     // process children
@@ -149,11 +170,29 @@ void Model::ProcessNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+int32_t Model::GetBoneId(const aiBone* bone)
+{
+    int boneIndex = 0;
+    std::string boneName(bone->mName.C_Str());
+
+    if (boneNameToIndexMap.find(boneName) == boneNameToIndexMap.end()) {
+        // Allocate an index for a new bone
+        boneIndex = static_cast<int32_t>(boneNameToIndexMap.size());
+        boneNameToIndexMap[boneName] = boneIndex;
+    }
+    else {
+        boneIndex = boneNameToIndexMap[boneName];
+    }
+
+    return boneIndex;
+}
+
+Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const uint32_t meshIndex)
 {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     std::vector<Texture> textures;
+    std::vector<VertexBoneData> bones;
 
     for (uint64_t i = 0; i < mesh->mNumVertices; i++)
     {
@@ -186,6 +225,13 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
         vertices.push_back(vertex);
     }
 
+    // fix it
+    bones.reserve(vertices.size());
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        bones.emplace_back();
+    }
+
     for (uint64_t i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -204,7 +250,21 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<Texture> specularMaps = LoadTextures(material, aiTextureType_SPECULAR);
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-    return Mesh(vertices, indices, textures);
+    for (uint32_t i = 0; i < mesh->mNumBones; i++)
+    {
+        const aiBone* bone = mesh->mBones[i];
+        int32_t boneId = GetBoneId(bone);
+
+        for (uint32_t i = 0; i < bone->mNumWeights; i++)
+        {
+            const aiVertexWeight& vw = bone->mWeights[i];
+            uint32_t globalVertexId = bone->mWeights[i].mVertexId;
+            bones[globalVertexId].AddBoneData(boneId, vw.mWeight);
+        }
+    }
+    
+
+    return Mesh(vertices, indices, bones, textures);
 }
 
 std::vector<Texture> Model::LoadTextures(aiMaterial* mat, aiTextureType type)
@@ -240,6 +300,7 @@ std::vector<Texture> Model::LoadTextures(aiMaterial* mat, aiTextureType type)
     
     return textures;
 }
+
 
 void Model::Init()
 {

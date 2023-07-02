@@ -75,6 +75,6 @@ public:
         texture1Spec.Load();
 	    */
 
-        meshes.push_back(Mesh(Vertex::GenerateList(vertices, nVertices), indices));
+        //meshes.push_back(Mesh(Vertex::GenerateList(vertices, nVertices), indices, 0));
     }
 };

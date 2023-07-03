@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <string>
+#include <windows.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -82,7 +83,7 @@ int main()
 		std::cout << "Gamepad not present" << std::endl;
 	}
 
-
+	long long startTimeMillis = GetTickCount();
 	
 	while (!screen.ShouldClose())
 	{
@@ -91,6 +92,10 @@ int main()
 		lastFrame = currentTime;
 		processInput(deltaTime);
 
+		long long currentTimeMillis = GetTickCount();
+		//TODO: change to currenttime?
+		float animTimeSec = static_cast<float>(currentTimeMillis - startTimeMillis) / 1000.0f;
+		
 		screen.Update();
 		
 		shader.Activate();
@@ -111,7 +116,9 @@ int main()
 		shader.SetMat4("projection", projection);
 
 		std::vector<glm::mat4> transforms;
-		model.GetBoneTransforms(transforms);
+		
+		model.GetBoneTransforms(animTimeSec, transforms);
+		
 		for (uint32_t i = 0; i < transforms.size(); i++)
 		{
 			glUniformMatrix4fv(glGetUniformLocation(shader.id, "bones"), (GLsizei)transforms.size(), GL_FALSE, glm::value_ptr(transforms[0]));

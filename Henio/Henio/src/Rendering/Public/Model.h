@@ -72,7 +72,7 @@ public:
 
     void Cleanup();
 
-    void GetBoneTransforms(std::vector<glm::mat4>& transforms);
+    void GetBoneTransforms(float timeInSeconds, std::vector<glm::mat4>& transforms);
 
 protected:
     std::vector<Mesh> meshes;
@@ -86,7 +86,14 @@ protected:
     Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const uint32_t meshIndex);
     std::vector<Texture> LoadTextures(aiMaterial* mat, aiTextureType type);
 
-    void ReadNodeHierarchy(const aiNode* node, const glm::mat4& parentTransform);
+    const aiNodeAnim* FindNodeAnim(const aiAnimation* animation, const std::string& nodeName);
+    uint32_t FindScaling(float animTimeTicks, const aiNodeAnim* animNode);
+    void CalcInterpolatedScaling(aiVector3D& outScaling, float animTimeTicks, const aiNodeAnim* animNode);
+    uint32_t FindRotation(float animTimeTicks, const aiNodeAnim* animNode);
+    void CalcInterpolatedRotation(aiQuaternion& outRotation, float animTimeTicks, const aiNodeAnim* animNode);
+    uint32_t FindPosition(float animTimeTicks, const aiNodeAnim* animNode);
+    void CalcInterpolatedTranslation(aiVector3D& outPosition, float animTimeTicks, const aiNodeAnim* animNode);
+    void ReadNodeHierarchy(float animTimeTicks, const aiNode* node, const glm::mat4& parentTransform);
 
     Assimp::Importer importer;
     const aiScene* scene = nullptr;
@@ -104,4 +111,6 @@ protected:
     };
 
     std::vector<BoneInfo> boneInfos;
+
+    glm::mat4 globalInverseTransform;
 };

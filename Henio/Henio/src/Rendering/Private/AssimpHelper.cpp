@@ -8,6 +8,11 @@ void AssimpHelper::ParseSingleBone(uint32_t boneIdx, const aiBone* bone)
 {
     std::cout << "Bone " << boneIdx << ": '" << bone->mName.C_Str() << "' num vertices affected by this bone: " << bone->mNumWeights << "\n";
 
+    std::cout << bone->mOffsetMatrix.a1 << " " << bone->mOffsetMatrix.a2 << " " << bone->mOffsetMatrix.a3 << " " << bone->mOffsetMatrix.a4 << std::endl;
+    std::cout << bone->mOffsetMatrix.b1 << " " << bone->mOffsetMatrix.b2 << " " << bone->mOffsetMatrix.b3 << " " << bone->mOffsetMatrix.b4 << std::endl;
+    std::cout << bone->mOffsetMatrix.c1 << " " << bone->mOffsetMatrix.c2 << " " << bone->mOffsetMatrix.c3 << " " << bone->mOffsetMatrix.c4 << std::endl;
+    std::cout << bone->mOffsetMatrix.d1 << " " << bone->mOffsetMatrix.d2 << " " << bone->mOffsetMatrix.d3 << " " << bone->mOffsetMatrix.d4 << std::endl;
+    
     for (uint32_t i = 0; i < bone->mNumWeights; i++)
     {
         if (i == 0)
@@ -15,7 +20,7 @@ void AssimpHelper::ParseSingleBone(uint32_t boneIdx, const aiBone* bone)
             std::cout << "\n";
         }
         const aiVertexWeight& vw = bone->mWeights[i];
-        std::cout << i << ": vertex id " << vw.mVertexId << " weight " << vw.mWeight;
+  //      std::cout << i << ": vertex id " << vw.mVertexId << " weight " << vw.mWeight;
     }
 
     std::cout << "\n";

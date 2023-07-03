@@ -8,6 +8,10 @@
 
 #include <assimp/postprocess.h>
 
+#include "Rendering/Public/AssimpHelper.h"
+
+static glm::mat4 mat4_cast(const aiMatrix4x4 &m) { return glm::make_mat4(&m.a1); }
+
 std::vector<Vertex> Vertex::GenerateList(float* vertices, int nVertices)
 {
     std::vector<Vertex> ret(nVertices);
@@ -141,12 +145,13 @@ Model::Model(glm::vec3 pos, glm::vec3 size)
 
 void Model::LoadModel(std::string path)
 {
-    Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
+    AssimpHelper::ParseScene(scene);
+    
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "Could not load model at " << path << std::endl << import.GetErrorString() << std::endl;
+        std::cout << "Could not load model at " << path << std::endl << importer.GetErrorString() << std::endl;
         return;
     }
 
@@ -255,6 +260,12 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const uint32_t meshI
         const aiBone* bone = mesh->mBones[i];
         int32_t boneId = GetBoneId(bone);
 
+        if (boneId == boneInfos.size())
+        {
+            BoneInfo bi(mat4_cast(bone->mOffsetMatrix));
+            boneInfos.push_back(bi);
+        }
+
         for (uint32_t i = 0; i < bone->mNumWeights; i++)
         {
             const aiVertexWeight& vw = bone->mWeights[i];
@@ -301,6 +312,26 @@ std::vector<Texture> Model::LoadTextures(aiMaterial* mat, aiTextureType type)
     return textures;
 }
 
+void Model::ReadNodeHierarchy(const aiNode* node, const glm::mat4& parentTransform)
+{
+    std::string nodeName = node->mName.data;
+    glm::mat4 nodeTransform (mat4_cast(node->mTransformation));
+
+ //   printf("%s - ", nodeName.c_str());
+
+    glm::mat4 globalTransform = parentTransform * nodeTransform;
+    if (boneNameToIndexMap.find(nodeName) != boneNameToIndexMap.end())
+    {
+        uint32_t boneIndex = boneNameToIndexMap[nodeName];
+        boneInfos[boneIndex].finalTransform = globalTransform * boneInfos[boneIndex].offsetMatrix;
+    }
+
+    for (uint32_t i = 0 ; i < node->mNumChildren; i++)
+    {
+        ReadNodeHierarchy(node->mChildren[i], globalTransform);
+    }
+}
+
 
 void Model::Init()
 {
@@ -326,5 +357,18 @@ void Model::Cleanup()
     for (Mesh mesh : meshes)
     {
         mesh.Cleanup();
+    }
+}
+
+void Model::GetBoneTransforms(std::vector<glm::mat4>& transforms)
+{
+    transforms.resize(boneInfos.size());
+    glm::mat4 identity = glm::mat4(1.0f);
+
+    ReadNodeHierarchy(scene->mRootNode, identity);
+
+    for (uint32_t i = 0; i < boneInfos.size(); i++)
+    {
+        transforms[i] = glm::transpose(boneInfos[i].finalTransform);
     }
 }

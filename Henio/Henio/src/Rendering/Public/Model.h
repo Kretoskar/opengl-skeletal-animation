@@ -72,6 +72,8 @@ public:
 
     void Cleanup();
 
+    void GetBoneTransforms(std::vector<glm::mat4>& transforms);
+
 protected:
     std::vector<Mesh> meshes;
     std::string directory;
@@ -83,4 +85,23 @@ protected:
     int32_t GetBoneId(const aiBone* bone);
     Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const uint32_t meshIndex);
     std::vector<Texture> LoadTextures(aiMaterial* mat, aiTextureType type);
+
+    void ReadNodeHierarchy(const aiNode* node, const glm::mat4& parentTransform);
+
+    Assimp::Importer importer;
+    const aiScene* scene = nullptr;
+
+    struct BoneInfo
+    {
+        glm::mat4 offsetMatrix;
+        glm::mat4 finalTransform;
+
+        BoneInfo(const glm::mat4& offset)
+        {
+            offsetMatrix = offset;
+            finalTransform = glm::mat4(0.0f);
+        }
+    };
+
+    std::vector<BoneInfo> boneInfos;
 };

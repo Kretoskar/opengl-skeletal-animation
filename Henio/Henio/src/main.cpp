@@ -81,6 +81,8 @@ int main()
 	{
 		std::cout << "Gamepad not present" << std::endl;
 	}
+
+
 	
 	while (!screen.ShouldClose())
 	{
@@ -107,6 +109,13 @@ int main()
 		const glm::mat4 projection = glm::perspective(glm::radians(camera.GetFov()), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
 		shader.SetMat4("view", view);
 		shader.SetMat4("projection", projection);
+
+		std::vector<glm::mat4> transforms;
+		model.GetBoneTransforms(transforms);
+		for (uint32_t i = 0; i < transforms.size(); i++)
+		{
+			glUniformMatrix4fv(glGetUniformLocation(shader.id, "bones"), (GLsizei)transforms.size(), GL_FALSE, glm::value_ptr(transforms[0]));
+		}
 		
 		model.Render(shader);
 		

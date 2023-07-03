@@ -76,7 +76,9 @@ vec3 CalcDirLight(vec3 norm, vec3 viewDir, vec3 diffMap, vec3 specMap);
 vec3 CalcPointLight(int idx, vec3 norm, vec3 viewDir, vec3 diffMap, vec3 specMap);
 
 void main()
-{
+{ 
+	FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	//FragColor = vec3(texture(specular0, TexCoord));
 	vec3 norm = normalize(Normal);
 	vec3 viewDir = normalize(viewPos - FragPos);
 	vec3 diffMap = vec3(texture(diffuse0, TexCoord));

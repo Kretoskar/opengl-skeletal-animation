@@ -10,7 +10,7 @@
 
 #include "Rendering/Public/AssimpHelper.h"
 
-static glm::mat4 mat4_cast(const aiMatrix4x4 &m) { return glm::make_mat4(&m.a1); }
+static glm::mat4 mat4_cast(const aiMatrix4x4 &m) { return glm::transpose(glm::make_mat4(&m.a1)); }
 
 std::vector<Vertex> Vertex::GenerateList(float* vertices, int nVertices)
 {
@@ -369,6 +369,6 @@ void Model::GetBoneTransforms(std::vector<glm::mat4>& transforms)
 
     for (uint32_t i = 0; i < boneInfos.size(); i++)
     {
-        transforms[i] = glm::transpose(boneInfos[i].finalTransform);
+        transforms[i] = boneInfos[i].finalTransform;
     }
 }

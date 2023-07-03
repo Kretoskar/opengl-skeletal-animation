@@ -103,27 +103,27 @@ void main()
 	
 	bool found = false;
 	
-	for (int i = 0; i < 4; i ++)
-	{
-		if (BoneIds[i] == 2)
-		{
-			if (Weights[i] >= 0.7)
-			{
-				FragColor = vec4(1.0, 0.0, 0.0, 0.0) * Weights[i];
-			}
-			else if (Weights[i] >= 0.4 && Weights[i] <= 0.6)
-			{
-				FragColor = vec4(0.0, 1.0, 0.0, 0.0) * Weights[i];
-			}
-			else if (Weights[i] >= 0.1)
-			{
-				FragColor = vec4(1.0, 1.0, 0.0, 0.0) * Weights[i];
-			}
-			
-			found = true;
-			break;
-		}
-	}
+	//for (int i = 0; i < 4; i ++)
+	//{
+	//	if (BoneIds[i] == 2)
+	//	{
+	//		if (Weights[i] >= 0.7)
+	//		{
+	//			FragColor = vec4(1.0, 0.0, 0.0, 0.0) * Weights[i];
+	//		}
+	//		else if (Weights[i] >= 0.4 && Weights[i] <= 0.6)
+	//		{
+	//			FragColor = vec4(0.0, 1.0, 0.0, 0.0) * Weights[i];
+	//		}
+	//		else if (Weights[i] >= 0.1)
+	//		{
+	//			FragColor = vec4(1.0, 1.0, 0.0, 0.0) * Weights[i];
+	//		}
+	//		
+	//		found = true;
+	//		break;
+	//	}
+	//}
 	
 	if (!found)
 	{

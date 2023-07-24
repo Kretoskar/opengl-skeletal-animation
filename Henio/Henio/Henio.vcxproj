@@ -811,6 +811,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Public\Camera.h" />
+    <ClInclude Include="src\Components\Public\TransformComponent.h" />
+    <ClInclude Include="src\Core\ECS\Public\ComponentArray.h" />
+    <ClInclude Include="src\Core\ECS\Public\ComponentManager.h" />
+    <ClInclude Include="src\Core\ECS\Public\Coordinator.h" />
+    <ClInclude Include="src\Core\ECS\Public\EntityManager.h" />
+    <ClInclude Include="src\Core\ECS\Public\SystemManager.h" />
+    <ClInclude Include="src\Core\ECS\Public\Types.h" />
     <ClInclude Include="src\Input\Public\Gamepad.h" />
     <ClInclude Include="src\Input\Public\Keyboard.h" />
     <ClInclude Include="src\Input\Public\Mouse.h" />
@@ -823,9 +830,15 @@
     <ClInclude Include="src\Rendering\Public\Model.h" />
     <ClInclude Include="src\Rendering\Public\Shader.h" />
     <ClInclude Include="src\Rendering\Public\Texture.h" />
+    <ClInclude Include="src\Systems\LogTransformSystem.h" />
+    <ClInclude Include="src\Systems\MoveRightSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\lamp.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Core\Private" />
+    <Folder Include="src\Core\Public" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

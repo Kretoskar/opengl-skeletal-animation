@@ -14,10 +14,14 @@
 #include "Input/Public/Mouse.h"
 #include "Input/Public/Gamepad.h"
 #include "Components/Public/Camera.h"
+#include "Components/Public/TransformComponent.h"
+#include "Core/ECS/Public/Coordinator.h"
 #include "Output/Public/Screen.h"
 #include "Rendering/Public/Texture.h"
 #include "Rendering/Models/Public/Cube.hpp"
 #include "Rendering/Models/Public/Lamp.hpp"
+#include "Systems/LogTransformSystem.h"
+#include "Systems/MoveRightSystem.h"
 
 void processInput(double deltaTime);
 
@@ -32,8 +36,37 @@ Screen screen;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+ECS::Coordinator coordinator;
+
 int main()
 {
+	coordinator.Init();
+
+	coordinator.RegisterComponent<TransformComponent>();
+	auto moveRightSystem = coordinator.RegisterSystem<MoveRightSystem>();
+	auto logTransformSystem = coordinator.RegisterSystem<LogTransformSystem>();
+	
+	ECS::Signature signature;
+	signature.set(coordinator.GetComponentType<TransformComponent>());
+	
+	coordinator.SetSystemSignature<MoveRightSystem>(signature);
+	coordinator.SetSystemSignature<LogTransformSystem>(signature);
+
+	std::vector<ECS::Entity> entities(ECS::MAX_ENTITIES);
+
+	for (auto& entity : entities)
+	{
+		entity = coordinator.CreateEntity();
+		
+		coordinator.AddComponent(entity, TransformComponent());
+	}
+
+	while (true)
+	{
+		moveRightSystem->Update(0.01f);
+		logTransformSystem->Update(0.01f);
+	}
+	
 	glfwInit();
 	
 	// using 3.3 as it's the doc supported version

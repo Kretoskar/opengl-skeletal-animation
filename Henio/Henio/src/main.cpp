@@ -16,7 +16,7 @@
 #include "Components/Public/Camera.h"
 #include "Components/Public/TransformComponent.h"
 #include "Core/ECS/Public/Coordinator.h"
-#include "Output/Public/Screen.h"
+#include "Output/Public/HenioCore.h"
 #include "Rendering/Public/Texture.h"
 #include "Rendering/Models/Public/Cube.hpp"
 #include "Rendering/Models/Public/Lamp.hpp"
@@ -31,7 +31,7 @@ uint16_t SCR_WIDTH = 800;
 uint16_t SCR_HEIGHT = 600;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-Screen screen;
+HenioCore henioCore;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -40,8 +40,9 @@ ECS::Coordinator coordinator;
 
 int main()
 {
+	henioCore.Init();
 	coordinator.Init();
-
+	
 	coordinator.RegisterComponent<TransformComponent>();
 	auto moveRightSystem = coordinator.RegisterSystem<MoveRightSystem>();
 	auto logTransformSystem = coordinator.RegisterSystem<LogTransformSystem>();
@@ -61,36 +62,25 @@ int main()
 		coordinator.AddComponent(entity, TransformComponent());
 	}
 
-	while (true)
-	{
-		moveRightSystem->Update(0.01f);
-		logTransformSystem->Update(0.01f);
-	}
+	long long startTime = GetTickCount();
 	
-	glfwInit();
+	while (!henioCore.ShouldClose())
+	{
+		const double currentTime = glfwGetTime();
+		deltaTime = currentTime - lastFrame;
+		lastFrame = currentTime;
+		processInput(deltaTime);
+		henioCore.Update();
+		
+		//moveRightSystem->Update(0.01f);
+		//logTransformSystem->Update(0.01f);
+		
+		henioCore.NewFrame();
+	}
+
 	
-	// using 3.3 as it's the doc supported version
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	if (!screen.Init())
-	{
-		std::cout << "Failed to create window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	// init GLAD
-	if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	screen.SetParameters();
+	glfwTerminate();
+	return 0;
 	
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 
@@ -118,7 +108,7 @@ int main()
 
 	long long startTimeMillis = GetTickCount();
 	
-	while (!screen.ShouldClose())
+	while (!henioCore.ShouldClose())
 	{
 		const double currentTime = glfwGetTime();
 		deltaTime = currentTime - lastFrame;
@@ -129,7 +119,7 @@ int main()
 		//TODO: change to currenttime?
 		float animTimeSec = static_cast<float>(currentTimeMillis - startTimeMillis) / 1000.0f;
 		
-		screen.Update();
+		henioCore.Update();
 		
 		shader.Activate();
 		shader.Set3Float("viewPos", camera.cameraPos);
@@ -159,7 +149,7 @@ int main()
 		
 		model.Render(shader);
 		
-		screen.NewFrame();
+		henioCore.NewFrame();
 	}
 
 	model.Cleanup();
@@ -172,7 +162,7 @@ void processInput(double deltaTime)
 {
 	if (Keyboard::Key(GLFW_KEY_ESCAPE))
 	{
-		screen.SetShouldClose(true);
+		henioCore.SetShouldClose(true);
 	}
 
 	// move camera

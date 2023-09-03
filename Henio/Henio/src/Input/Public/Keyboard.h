@@ -12,8 +12,7 @@ public:
     static bool KeyChanged(int key);
     static bool KeyUp(int key);
     static bool KeyDown(int key);
-
-private:
+    
     static bool keys[];
     static bool keysChanged[];
 };

@@ -23,8 +23,7 @@ public:
     static bool ButtonChanged(int button);
     static bool ButtonUp(int button);
     static bool ButtonDown(int button);
-
-private:
+    
     static double x;
     static double y;
 
@@ -41,5 +40,4 @@ private:
 
     static bool buttons[];
     static bool buttonsChanged[];
-    
 };

@@ -431,7 +431,7 @@
       <AdditionalIncludeDirectories>C:\_Projekty\HenioGameEngine\Henio\Henio\src;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
-    <ClCompile Include="src\Output\Private\Screen.cpp">
+    <ClCompile Include="src\Output\Private\HenioCore.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
@@ -804,6 +804,7 @@
       <AdditionalIncludeDirectories>C:\_Projekty\HenioGameEngine\Henio\Henio\src;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="src\Systems\InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\fragment_core.glsl" />
@@ -811,6 +812,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Public\Camera.h" />
+    <ClInclude Include="src\Components\Public\InputComponent.h" />
     <ClInclude Include="src\Components\Public\TransformComponent.h" />
     <ClInclude Include="src\Core\ECS\Public\ComponentArray.h" />
     <ClInclude Include="src\Core\ECS\Public\ComponentManager.h" />
@@ -821,7 +823,7 @@
     <ClInclude Include="src\Input\Public\Gamepad.h" />
     <ClInclude Include="src\Input\Public\Keyboard.h" />
     <ClInclude Include="src\Input\Public\Mouse.h" />
-    <ClInclude Include="src\Output\Public\Screen.h" />
+    <ClInclude Include="src\Output\Public\HenioCore.h" />
     <ClInclude Include="src\Rendering\Models\Public\Cube.hpp" />
     <ClInclude Include="src\Rendering\Models\Public\Lamp.hpp" />
     <ClInclude Include="src\Rendering\Public\AssimpHelper.h" />
@@ -830,6 +832,7 @@
     <ClInclude Include="src\Rendering\Public\Model.h" />
     <ClInclude Include="src\Rendering\Public\Shader.h" />
     <ClInclude Include="src\Rendering\Public\Texture.h" />
+    <ClInclude Include="src\Systems\InputSystem.h" />
     <ClInclude Include="src\Systems\LogTransformSystem.h" />
     <ClInclude Include="src\Systems\MoveRightSystem.h" />
   </ItemGroup>

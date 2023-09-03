@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-class Screen
+class HenioCore
 {
 public:
     static uint16_t SCR_WIDTH;
@@ -12,9 +12,10 @@ public:
 
     static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 
-    Screen();
+    HenioCore();
 
     bool Init();
+    bool MakeWindow();
 
     void SetParameters();
 

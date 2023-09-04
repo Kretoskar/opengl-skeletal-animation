@@ -9,7 +9,13 @@
 
 void CameraSystem::Init()
 {
+    for (auto const entity : mEntities)
+    {
+        auto& transformComponent = coordinator.GetComponent<TransformComponent>(entity);
+        auto& inputComponent = coordinator.GetComponent<InputComponent>(entity);
 
+        transformComponent.rotation = glm::vec3(0, -90.0f, 0);
+    }
 }
 
 void CameraSystem::Update(float deltaTime)

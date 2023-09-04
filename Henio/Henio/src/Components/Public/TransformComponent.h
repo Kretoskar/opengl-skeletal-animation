@@ -9,9 +9,9 @@
 
 struct TransformComponent
 {
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 scale;
+    glm::vec3 position = glm::vec3();
+    glm::vec3 rotation = glm::vec3();
+    glm::vec3 scale = glm::vec3(1.0f);
 
     void SetPitch(float inPitch) { rotation.x = inPitch;  }
     void SetYaw(float inYaw) { rotation.y = inYaw;  }
@@ -23,9 +23,10 @@ struct TransformComponent
         glm::vec3 direction;
         direction.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
         direction.y = sin(glm::radians(rotation.x));
-        direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.y));
+        direction.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
 
-        return glm::normalize(direction);
+        glm::normalize(direction);
+        return direction;
     }
     
     glm::vec3 GetRightVector()

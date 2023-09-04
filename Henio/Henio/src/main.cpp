@@ -14,14 +14,15 @@
 #include "Input/Public/Mouse.h"
 #include "Input/Public/Gamepad.h"
 #include "Components/Public/Camera.h"
+#include "Components/Public/CameraComponent.h"
 #include "Components/Public/TransformComponent.h"
 #include "Core/ECS/Public/Coordinator.h"
 #include "Output/Public/HenioCore.h"
 #include "Rendering/Public/Texture.h"
 #include "Rendering/Models/Public/Cube.hpp"
 #include "Rendering/Models/Public/Lamp.hpp"
-#include "Systems/LogTransformSystem.h"
-#include "Systems/MoveRightSystem.h"
+#include "Systems/CameraSystem.h"
+#include "Systems/InputSystem.h"
 
 void processInput(double deltaTime);
 
@@ -44,23 +45,29 @@ int main()
 	coordinator.Init();
 	
 	coordinator.RegisterComponent<TransformComponent>();
-	auto moveRightSystem = coordinator.RegisterSystem<MoveRightSystem>();
-	auto logTransformSystem = coordinator.RegisterSystem<LogTransformSystem>();
+	coordinator.RegisterComponent<InputComponent>();
+	coordinator.RegisterComponent<CameraComponent>();
 	
-	ECS::Signature signature;
-	signature.set(coordinator.GetComponentType<TransformComponent>());
+	std::shared_ptr<CameraSystem> cameraSystem = coordinator.RegisterSystem<CameraSystem>();
+	ECS::Signature cameraSystemSignature;
+	cameraSystemSignature.set(coordinator.GetComponentType<TransformComponent>());
+	cameraSystemSignature.set(coordinator.GetComponentType<InputComponent>());
+	cameraSystemSignature.set(coordinator.GetComponentType<CameraComponent>());
+	coordinator.SetSystemSignature<CameraSystem>(cameraSystemSignature);
+
+	std::shared_ptr<InputSystem> inputSystem = coordinator.RegisterSystem<InputSystem>();
+	ECS::Signature inputSystemSignature;
+	inputSystemSignature.set(coordinator.GetComponentType<InputComponent>());
+	coordinator.SetSystemSignature<InputSystem>(inputSystemSignature);
+
+	std::vector<ECS::Entity> entities = std::vector<ECS::Entity>();
+
+	ECS::Entity cameraEntity = ECS::Entity();
+	coordinator.AddComponent(cameraEntity, TransformComponent());
+	coordinator.AddComponent(cameraEntity, InputComponent());
+	coordinator.AddComponent(cameraEntity, CameraComponent());
 	
-	coordinator.SetSystemSignature<MoveRightSystem>(signature);
-	coordinator.SetSystemSignature<LogTransformSystem>(signature);
-
-	std::vector<ECS::Entity> entities(ECS::MAX_ENTITIES);
-
-	for (auto& entity : entities)
-	{
-		entity = coordinator.CreateEntity();
-		
-		coordinator.AddComponent(entity, TransformComponent());
-	}
+	entities.emplace_back(cameraEntity);
 
 	long long startTime = GetTickCount();
 	
@@ -71,9 +78,9 @@ int main()
 		lastFrame = currentTime;
 		processInput(deltaTime);
 		henioCore.Update();
-		
-		//moveRightSystem->Update(0.01f);
-		//logTransformSystem->Update(0.01f);
+
+		inputSystem->Update(deltaTime);
+		cameraSystem->Update(deltaTime);
 		
 		henioCore.NewFrame();
 	}

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <glad\glad.h>
+#include <GLFW\glfw3.h>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -33,7 +35,7 @@ struct TransformComponent
     
     glm::vec3 GetUpVector()
     {
-        glm::normalize(glm::cross(GetRightVector(), GetFrontVector()));
+        return glm::normalize(glm::cross(GetRightVector(), GetFrontVector()));
     }
 
     glm::mat4 GetViewMatrix()

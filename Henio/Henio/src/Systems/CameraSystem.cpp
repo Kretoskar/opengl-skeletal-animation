@@ -9,17 +9,7 @@
 
 void CameraSystem::Init()
 {
-    for (auto const entity : mEntities)
-    {
-        auto& cameraComponent = coordinator.GetComponent<CameraComponent>(entity);
-        cameraComponent.speed = 2.5f;
-        cameraComponent.fov = 45.0f;
-        cameraComponent.cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 
-        auto& transformComponent = coordinator.GetComponent<TransformComponent>(entity);
-        transformComponent.position = glm::vec3(0.0f, 0.0f, 3.0f);
-        transformComponent.rotation.y = -90.0f;
-    }
 }
 
 void CameraSystem::Update(float deltaTime)
@@ -31,7 +21,7 @@ void CameraSystem::Update(float deltaTime)
         auto& inputComponent = coordinator.GetComponent<InputComponent>(entity);
 
         float velocity = deltaTime * cameraComponent.speed;
-
+        
         ProcessKeyboardInput(transformComponent, inputComponent, velocity);
         ProcessMouseInput(transformComponent, inputComponent);
     }
@@ -39,27 +29,27 @@ void CameraSystem::Update(float deltaTime)
 
 void CameraSystem::ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float velocity)
 {
-    if (inputComponent.KeyboardKeyDown(GLFW_KEY_W))
+    if (inputComponent.keyboardKeys[GLFW_KEY_W])
     {
         transformComponent.position += transformComponent.GetFrontVector() * velocity;
     }
-    else if (inputComponent.KeyboardKeyDown(GLFW_KEY_S))
+    else if (inputComponent.keyboardKeys[GLFW_KEY_S])
     {
         transformComponent.position -= transformComponent.GetFrontVector() * velocity;
     }
-    else if (inputComponent.KeyboardKeyDown(GLFW_KEY_A))
+    else if (inputComponent.keyboardKeys[GLFW_KEY_A])
     {
         transformComponent.position -= transformComponent.GetRightVector() * velocity;
     }
-    else if (inputComponent.KeyboardKeyDown(GLFW_KEY_D))
+    else if (inputComponent.keyboardKeys[GLFW_KEY_D])
     {
         transformComponent.position += transformComponent.GetRightVector() * velocity;
     }
-    else if (inputComponent.KeyboardKeyDown(GLFW_KEY_SPACE))
+    else if (inputComponent.keyboardKeys[GLFW_KEY_SPACE])
     {
         transformComponent.position += transformComponent.GetUpVector() * velocity;
     }
-    else if (inputComponent.KeyboardKeyDown(GLFW_KEY_LEFT_SHIFT))
+    else if (inputComponent.keyboardKeys[GLFW_KEY_LEFT_SHIFT])
     {
         transformComponent.position -= transformComponent.GetUpVector() * velocity;
     }

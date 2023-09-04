@@ -836,8 +836,6 @@
     <ClInclude Include="src\Rendering\Public\Texture.h" />
     <ClInclude Include="src\Systems\CameraSystem.h" />
     <ClInclude Include="src\Systems\InputSystem.h" />
-    <ClInclude Include="src\Systems\LogTransformSystem.h" />
-    <ClInclude Include="src\Systems\MoveRightSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\lamp.glsl" />

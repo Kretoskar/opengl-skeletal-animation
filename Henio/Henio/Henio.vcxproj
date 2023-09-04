@@ -804,6 +804,7 @@
       <AdditionalIncludeDirectories>C:\_Projekty\HenioGameEngine\Henio\Henio\src;</AdditionalIncludeDirectories>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="src\Systems\CameraSystem.cpp" />
     <ClCompile Include="src\Systems\InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -812,6 +813,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\Public\Camera.h" />
+    <ClInclude Include="src\Components\Public\CameraComponent.h" />
     <ClInclude Include="src\Components\Public\InputComponent.h" />
     <ClInclude Include="src\Components\Public\TransformComponent.h" />
     <ClInclude Include="src\Core\ECS\Public\ComponentArray.h" />
@@ -832,6 +834,7 @@
     <ClInclude Include="src\Rendering\Public\Model.h" />
     <ClInclude Include="src\Rendering\Public\Shader.h" />
     <ClInclude Include="src\Rendering\Public\Texture.h" />
+    <ClInclude Include="src\Systems\CameraSystem.h" />
     <ClInclude Include="src\Systems\InputSystem.h" />
     <ClInclude Include="src\Systems\LogTransformSystem.h" />
     <ClInclude Include="src\Systems\MoveRightSystem.h" />

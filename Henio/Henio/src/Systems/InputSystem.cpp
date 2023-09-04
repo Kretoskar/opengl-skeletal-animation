@@ -20,8 +20,8 @@ void InputSystem::Update(float deltaTime)
         inputComp.mouseY = Mouse::GetMouseY();
         inputComp.mouseDeltaX = Mouse::GetMouseDeltaX();
         inputComp.mouseDeltaY = Mouse::GetMouseDeltaY();
-        inputComp.mouseScrollDeltaX = Mouse::scrollDeltaX;
-        inputComp.mouseScrollDeltaY = Mouse::scrollDeltaY;
+        inputComp.mouseScrollDeltaX = Mouse::GetScrollDeltaX();
+        inputComp.mouseScrollDeltaY = Mouse::GetScrollDeltaY();
         inputComp.mouseButtons = Mouse::buttons;
         inputComp.mouseButtonsChanged = Mouse::buttonsChanged;
     }

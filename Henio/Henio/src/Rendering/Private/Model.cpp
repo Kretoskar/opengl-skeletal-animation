@@ -518,6 +518,10 @@ void Model::Render(Shader shader)
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, pos);
     model = glm::scale(model, size);
+
+    //TODO: find proper fix
+    model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
     shader.SetMat4("model", model);
 
     shader.SetFloat("material.shininess", 0.5f);

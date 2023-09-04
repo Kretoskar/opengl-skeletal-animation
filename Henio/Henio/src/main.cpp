@@ -24,8 +24,6 @@
 #include "Systems/CameraSystem.h"
 #include "Systems/InputSystem.h"
 
-void processInput(double deltaTime);
-
 Gamepad mainGamepad(0);
 
 uint16_t SCR_WIDTH = 800;
@@ -41,7 +39,7 @@ ECS::Coordinator coordinator;
 
 int main()
 {
-	henioCore.Init();
+	/*henioCore.Init();
 	coordinator.Init();
 	
 	coordinator.RegisterComponent<TransformComponent>();
@@ -78,16 +76,43 @@ int main()
 		lastFrame = currentTime;
 		processInput(deltaTime);
 		henioCore.Update();
-
-		inputSystem->Update(deltaTime);
-		cameraSystem->Update(deltaTime);
 		
 		henioCore.NewFrame();
 	}
 
 	
 	glfwTerminate();
-	return 0;
+	return 0;*/
+
+	henioCore.Init();
+	coordinator.Init();
+	
+	coordinator.RegisterComponent<TransformComponent>();
+	coordinator.RegisterComponent<InputComponent>();
+	coordinator.RegisterComponent<CameraComponent>();
+	
+	std::shared_ptr<CameraSystem> cameraSystem = coordinator.RegisterSystem<CameraSystem>();
+	ECS::Signature cameraSystemSignature;
+	cameraSystemSignature.set(coordinator.GetComponentType<TransformComponent>());
+	cameraSystemSignature.set(coordinator.GetComponentType<InputComponent>());
+	cameraSystemSignature.set(coordinator.GetComponentType<CameraComponent>());
+	coordinator.SetSystemSignature<CameraSystem>(cameraSystemSignature);
+
+	std::shared_ptr<InputSystem> inputSystem = coordinator.RegisterSystem<InputSystem>();
+	ECS::Signature inputSystemSignature;
+	inputSystemSignature.set(coordinator.GetComponentType<InputComponent>());
+	coordinator.SetSystemSignature<InputSystem>(inputSystemSignature);
+
+	std::vector<ECS::Entity> entities = std::vector<ECS::Entity>();
+
+	ECS::Entity cameraEntity = ECS::Entity();
+	coordinator.AddComponent(cameraEntity, TransformComponent());
+	coordinator.AddComponent(cameraEntity, InputComponent());
+	coordinator.AddComponent(cameraEntity, CameraComponent());
+	
+	entities.emplace_back(cameraEntity);
+
+	long long startTime = GetTickCount();
 	
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 
@@ -102,16 +127,6 @@ int main()
 		};
 
 	DirLight dirLight = {glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.1f), glm::vec3(0.4f), glm::vec3(0.5f)};
-	
-	mainGamepad.Update();
-	if (mainGamepad.IsPresent())
-	{
-		std::cout << mainGamepad.GetName() << " is present." << std::endl;
-	}
-	else
-	{
-		std::cout << "Gamepad not present" << std::endl;
-	}
 
 	long long startTimeMillis = GetTickCount();
 	
@@ -120,13 +135,14 @@ int main()
 		const double currentTime = glfwGetTime();
 		deltaTime = currentTime - lastFrame;
 		lastFrame = currentTime;
-		processInput(deltaTime);
 
 		long long currentTimeMillis = GetTickCount();
 		//TODO: change to currenttime?
 		float animTimeSec = static_cast<float>(currentTimeMillis - startTimeMillis) / 1000.0f;
 		
 		henioCore.Update();
+		inputSystem->Update(deltaTime);
+		cameraSystem->Update(deltaTime);
 		
 		shader.Activate();
 		shader.Set3Float("viewPos", camera.cameraPos);
@@ -163,57 +179,4 @@ int main()
 	
 	glfwTerminate();
 	return 0;
-}
-
-void processInput(double deltaTime)
-{
-	if (Keyboard::Key(GLFW_KEY_ESCAPE))
-	{
-		henioCore.SetShouldClose(true);
-	}
-
-	// move camera
-	if (Keyboard::Key(GLFW_KEY_W))
-	{
-		camera.UpdateCameraPosition(CameraDirection::FORWARD, deltaTime);
-	}
-
-	if (Keyboard::Key(GLFW_KEY_S))
-	{
-		camera.UpdateCameraPosition(CameraDirection::BACKWARD, deltaTime);
-	}
-
-	if (Keyboard::Key(GLFW_KEY_A))
-	{
-		camera.UpdateCameraPosition(CameraDirection::LEFT, deltaTime);
-	}
-
-	if (Keyboard::Key(GLFW_KEY_D))
-	{
-		camera.UpdateCameraPosition(CameraDirection::RIGHT, deltaTime);
-	}
-
-	if (Keyboard::Key(GLFW_KEY_SPACE))
-	{
-		camera.UpdateCameraPosition(CameraDirection::UP, deltaTime);
-	}
-
-	if (Keyboard::Key(GLFW_KEY_LEFT_SHIFT))
-	{
-		camera.UpdateCameraPosition(CameraDirection::DOWN, deltaTime);
-	}
-
-	double dx = Mouse::GetMouseDeltaX() / 50;
-	double dy = Mouse::GetMouseDeltaY() / 50;
-
-	if (glm::abs(dx) > glm::epsilon<double>() || glm::abs(dy) > glm::epsilon<double>())
-	{
-		camera.UpdateCameraDirection(dx, dy);
-	}
-
-	double scrollDy = Mouse::GetScrollDeltaY();
-	if (glm::abs(scrollDy) > glm::epsilon<double>())
-	{
-		camera.UpdateCameraFov(scrollDy);
-	}
 }

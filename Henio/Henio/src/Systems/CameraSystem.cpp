@@ -24,6 +24,8 @@ void CameraSystem::Update(float deltaTime)
         
         ProcessKeyboardInput(transformComponent, inputComponent, velocity);
         ProcessMouseInput(transformComponent, inputComponent);
+
+        CamTransformComp = transformComponent;
     }
 }
 

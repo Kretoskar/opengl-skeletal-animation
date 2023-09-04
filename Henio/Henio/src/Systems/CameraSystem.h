@@ -13,4 +13,6 @@ public:
     void ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float velocity);
     void ProcessMouseInput(TransformComponent& transformComponent, InputComponent& inputComponent);
     void Update(float deltaTime);
+
+    TransformComponent CamTransformComp;
 };

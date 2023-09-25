@@ -10,8 +10,8 @@ class CameraSystem : public ECS::System
 {
 public:
     void Init();
-    void ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float velocity);
-    void ProcessMouseInput(TransformComponent& transformComponent, InputComponent& inputComponent);
+    void ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float speed);
+    void ProcessMouseInput(TransformComponent& transformComponent, InputComponent& inputComponent, float speed);
     void Update(float deltaTime);
 
     TransformComponent CamTransformComp;

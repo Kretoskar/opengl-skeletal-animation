@@ -1,6 +1,7 @@
 ﻿#include "CameraSystem.h"
 
 #include <GLFW/glfw3.h>
+#include <glm/gtx/quaternion.hpp>
 
 #include "Components/Public/CameraComponent.h"
 #include "Components/Public/InputComponent.h"
@@ -26,46 +27,47 @@ void CameraSystem::Update(float deltaTime)
         auto& transformComponent = coordinator.GetComponent<TransformComponent>(entity);
         auto& inputComponent = coordinator.GetComponent<InputComponent>(entity);
 
-        float velocity = deltaTime * cameraComponent.speed;
+        float speed = deltaTime * cameraComponent.speed;
+        float angularSpeed = deltaTime * cameraComponent.angularSpeed;
         
-        ProcessKeyboardInput(transformComponent, inputComponent, velocity);
-        ProcessMouseInput(transformComponent, inputComponent);
+        ProcessKeyboardInput(transformComponent, inputComponent, speed);
+        ProcessMouseInput(transformComponent, inputComponent, angularSpeed);
 
         CamTransformComp = transformComponent;
     }
 }
 
-void CameraSystem::ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float velocity)
+void CameraSystem::ProcessKeyboardInput(TransformComponent& transformComponent, InputComponent& inputComponent, float speed)
 {
     if (inputComponent.keyboardKeys[GLFW_KEY_W])
     {
-        transformComponent.position += transformComponent.GetFrontVector() * velocity;
+        transformComponent.position += transformComponent.GetFrontVector() * speed;
     }
     else if (inputComponent.keyboardKeys[GLFW_KEY_S])
     {
-        transformComponent.position -= transformComponent.GetFrontVector() * velocity;
+        transformComponent.position -= transformComponent.GetFrontVector() * speed;
     }
     else if (inputComponent.keyboardKeys[GLFW_KEY_A])
     {
-        transformComponent.position -= transformComponent.GetRightVector() * velocity;
+        transformComponent.position -= transformComponent.GetRightVector() * speed;
     }
     else if (inputComponent.keyboardKeys[GLFW_KEY_D])
     {
-        transformComponent.position += transformComponent.GetRightVector() * velocity;
+        transformComponent.position += transformComponent.GetRightVector() * speed;
     }
     else if (inputComponent.keyboardKeys[GLFW_KEY_SPACE])
     {
-        transformComponent.position += transformComponent.GetUpVector() * velocity;
+        transformComponent.position += transformComponent.GetUpVector() * speed;
     }
     else if (inputComponent.keyboardKeys[GLFW_KEY_LEFT_SHIFT])
     {
-        transformComponent.position -= transformComponent.GetUpVector() * velocity;
+        transformComponent.position -= transformComponent.GetUpVector() * speed;
     }
 }
 
-void CameraSystem::ProcessMouseInput(TransformComponent& transformComponent, InputComponent& inputComponent)
+void CameraSystem::ProcessMouseInput(TransformComponent& transformComponent, InputComponent& inputComponent, float speed)
 {
-    transformComponent.rotation.y += inputComponent.mouseDeltaX;
-    transformComponent.rotation.x += inputComponent.mouseDeltaY;
+    transformComponent.rotation.y += inputComponent.mouseDeltaX * speed;
+    transformComponent.rotation.x += inputComponent.mouseDeltaY * speed;
     transformComponent.rotation.x = glm::clamp(transformComponent.rotation.x, -89.0f, 89.0f);
 }

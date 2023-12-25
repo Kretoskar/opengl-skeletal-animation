@@ -2,47 +2,31 @@
 #include <cstdio>
 #include <ostream>
 
-#define LOG_ERROR(...) Logger::LogError(__VA_ARGS__);
-#define LOG_WARNING(...) Logger::LogWarning(__VA_ARGS__);
-#define LOG_MESSAGE(...) Logger::LogMessage(__VA_ARGS__);
+enum LogVerbosity
+{
+    Error = 1,
+    Warning = 2,
+    Message = 3,
+};
+
+#define LOG_ERROR(...) \
+    system("Color 4"); \
+    std::printf("[Error] %s: ", __FUNCTION__); \
+    Logger::Log(LogVerbosity::Error, __VA_ARGS__);
+
+#define LOG_WARNING(...) \
+    system("Color 6"); \
+    std::printf("[Warning] %s: ", __FUNCTION__); \
+    Logger::Log(LogVerbosity::Warning, args ... );
+
+#define LOG_MESSAGE(...) \
+    system("Color 7"); \
+    std::printf("[Message] %s: ", __FUNCTION__); \
+    Logger::Log(LogVerbosity::Message, __VA_ARGS__);
 
 class Logger
 {
 public:
-    
-    template <typename... Args>
-    static void LogError(Args ... args)
-    {
-        system("Color 4");
-        std::printf("[Error] %s: ", __FUNCTION__);
-        Log(mLogError, args ... );
-    }
-
-    template <typename... Args>
-    static void LogWarning(Args ... args)
-    {
-        system("Color 6");
-        std::printf("[Warning] %s: ", __FUNCTION__);
-        Log(mLogWarning, args ... );
-    }
-
-    template <typename... Args>
-    static void LogMessage(Args ... args)
-    {
-        system("Color 7");
-        std::printf("[Message] %s: ", __FUNCTION__);
-        Log(mLogMessage, args ... );
-    }
-    
-    static void SetLogLevel(unsigned int inLogLevel)
-    {
-        inLogLevel <= 9 ? mLogLevel = inLogLevel :
-        mLogLevel = 9;
-    }
-
-    
-    
-private:
     /* log if input log level is equal or smaller to log level set */
     template <typename... Args>
     static void Log(unsigned int logLevel, Args ... args)
@@ -54,6 +38,12 @@ private:
             std::fflush(stdout);
 
         }
+    }
+    
+    static void SetLogLevel(unsigned int inLogLevel)
+    {
+        inLogLevel <= 9 ? mLogLevel = inLogLevel :
+        mLogLevel = 9;
     }
     
     static unsigned int mLogLevel;

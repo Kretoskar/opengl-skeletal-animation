@@ -48,7 +48,7 @@ void Window::MainLoop()
 
 void Window::Cleanup()
 {
-    Logger::LogMessage("%s: Terminating Window\n", __FUNCTION__);
+    LOG_MESSAGE("Terminating Window")
     glfwDestroyWindow(mWindow);
     glfwTerminate();
 }

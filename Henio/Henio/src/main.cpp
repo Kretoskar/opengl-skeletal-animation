@@ -6,11 +6,10 @@
 int main()
 {
 	std::unique_ptr<Window> w = std::make_unique<Window>();
-
 	if (!w->Init(640, 480, "Henio Game Engine"))
 	{
-		Logger::LogError("%s error: Window init error\n",
-		__FUNCTION__);
+
+		LOG_ERROR("Window init error")
 		return -1;
 	}
 	

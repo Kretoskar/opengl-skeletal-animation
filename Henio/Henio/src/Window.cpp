@@ -5,7 +5,7 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
 {
     if (!glfwInit())
     {
-        Logger::LogError("%s: glfwInit() error\n", __FUNCTION__);
+        LOG_ERROR("glfwInit() error")
         return false;
     }
     
@@ -15,13 +15,13 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
     
     if (!mWindow)
     {
-        Logger::LogError("%s: Could not create window\n", __FUNCTION__);
+        LOG_ERROR("Could not create window")
         glfwTerminate();
         return false;
     }
 
     glfwMakeContextCurrent(mWindow);
-    Logger::LogMessage("%s: Window successfully initialized\n", __FUNCTION__);
+    LOG_MESSAGE("Window successfully initialized")
     
     return true;
 }

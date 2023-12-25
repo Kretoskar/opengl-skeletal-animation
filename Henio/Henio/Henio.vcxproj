@@ -133,7 +133,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

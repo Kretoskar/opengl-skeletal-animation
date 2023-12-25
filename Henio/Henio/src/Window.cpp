@@ -19,17 +19,30 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
         glfwTerminate();
         return false;
     }
+
+    glfwMakeContextCurrent(mWindow);
+    Logger::LogMessage("%s: Window successfully initialized\n", __FUNCTION__);
     
-    Logger::LogError("%s: Window successfully initialized\n",__FUNCTION__);
     return true;
 }
 
 void Window::MainLoop()
 {
+    glfwSwapInterval(1);
+    float color = 0.0f;
+    
     while (!glfwWindowShouldClose(mWindow))
     {
+        color >= 1.0f ? color = 0.0f : color += 0.01f;
+        glClearColor(color, color, color, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        /* swap buffers */
+        glfwSwapBuffers(mWindow);
+        
         /* poll events in a loop */
         glfwPollEvents();
+        
     }
 }
 

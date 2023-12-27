@@ -11,5 +11,12 @@ public:
     void Cleanup();
     
 private:
+    void HandleWindowCloseEvents();
+    void HandleWindowMinimizedEvents(int minimized);
+    void HandleWindowMaximizedEvents(int maximized);
+
+    void HandleKeyEvents(int key, int scancode, int action, int mods);
+    void HandleMouseButtonEvents(int button, int action, int mods);
+    
     GLFWwindow *mWindow = nullptr;
 };

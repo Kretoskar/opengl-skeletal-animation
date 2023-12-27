@@ -11,17 +11,17 @@ enum LogVerbosity
 
 #define LOG_ERROR(...) \
     system("Color 4"); \
-    std::printf("[Error] %s: ", __FUNCTION__); \
+    std::printf("[Error] [%s] ", __FUNCTION__); \
     Logger::Log(LogVerbosity::Error, __VA_ARGS__);
 
 #define LOG_WARNING(...) \
     system("Color 6"); \
-    std::printf("[Warning] %s: ", __FUNCTION__); \
+    std::printf("[Warning] [%s] ", __FUNCTION__); \
     Logger::Log(LogVerbosity::Warning, args ... );
 
 #define LOG_MESSAGE(...) \
     system("Color 7"); \
-    std::printf("[Message] %s: ", __FUNCTION__); \
+    std::printf("[Message] [%s] ", __FUNCTION__); \
     Logger::Log(LogVerbosity::Message, __VA_ARGS__);
 
 class Logger

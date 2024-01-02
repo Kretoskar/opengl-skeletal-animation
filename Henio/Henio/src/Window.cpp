@@ -11,45 +11,45 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
     
     /* set a "hint" for the NEXT window created*/
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    mWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     
-    if (!mWindow)
+    if (!window)
     {
         LOG_ERROR("Could not create window")
         glfwTerminate();
         return false;
     }
 
-    glfwMakeContextCurrent(mWindow);
+    glfwMakeContextCurrent(window);
     LOG_MESSAGE("Window successfully initialized")
 
-    glfwSetWindowUserPointer(mWindow, this);
+    glfwSetWindowUserPointer(window, this);
     
-    glfwSetWindowCloseCallback(mWindow, [](GLFWwindow *win)
+    glfwSetWindowCloseCallback(window, [](GLFWwindow *win)
     {
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleWindowCloseEvents();
     });
 
-    glfwSetWindowIconifyCallback(mWindow, [](GLFWwindow *win, int minimized)
+    glfwSetWindowIconifyCallback(window, [](GLFWwindow *win, int minimized)
     {
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleWindowMinimizedEvents(minimized);
     });
 
-    glfwSetWindowMaximizeCallback(mWindow, [](GLFWwindow *win, int maximized)
+    glfwSetWindowMaximizeCallback(window, [](GLFWwindow *win, int maximized)
     {
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleWindowMaximizedEvents(maximized);
     });
 
-    glfwSetKeyCallback(mWindow, [](GLFWwindow *win, int key, int scancode, int action, int mods)
+    glfwSetKeyCallback(window, [](GLFWwindow *win, int key, int scancode, int action, int mods)
     {
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleKeyEvents(key, scancode, action, mods);
     });
 
-    glfwSetMouseButtonCallback(mWindow, [](GLFWwindow *win, int button, int action, int mods)
+    glfwSetMouseButtonCallback(window, [](GLFWwindow *win, int button, int action, int mods)
     {
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleMouseButtonEvents(button, action, mods);
@@ -63,13 +63,13 @@ void Window::MainLoop()
     glfwSwapInterval(1);
     float color = 0.0f;
     
-    while (!glfwWindowShouldClose(mWindow))
+    while (!glfwWindowShouldClose(window))
     {
         color >= 1.0f ? color = 0.0f : color += 0.01f;
         glClearColor(color, color, color, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(mWindow);
+        glfwSwapBuffers(window);
         
          
         glfwPollEvents();
@@ -79,7 +79,7 @@ void Window::MainLoop()
 void Window::Cleanup()
 {
     LOG_MESSAGE("Terminating Window")
-    glfwDestroyWindow(mWindow);
+    glfwDestroyWindow(window);
     glfwTerminate();
 }
 

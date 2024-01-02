@@ -19,5 +19,5 @@ private:
     void HandleKeyEvents(int key, int scancode, int action, int mods);
     void HandleMouseButtonEvents(int button, int action, int mods);
     
-    GLFWwindow *mWindow = nullptr;
+    GLFWwindow *window = nullptr;
 };

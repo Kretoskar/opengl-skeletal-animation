@@ -31,7 +31,7 @@ public:
     template <typename... Args>
     static void Log(unsigned int logLevel, Args ... args)
     {
-        if (logLevel <= mLogLevel) {
+        if (logLevel <= logLevel) {
             std::printf(args ...);
             std::printf("\n");
             /* force output, i.e. for Eclipse */
@@ -42,12 +42,12 @@ public:
     
     static void SetLogLevel(unsigned int inLogLevel)
     {
-        inLogLevel <= 9 ? mLogLevel = inLogLevel :
-        mLogLevel = 9;
+        inLogLevel <= 9 ? logLevel = inLogLevel :
+        logLevel = 9;
     }
     
-    static unsigned int mLogLevel;
-    static unsigned int mLogError;
-    static unsigned int mLogWarning;
-    static unsigned int mLogMessage;
+    static unsigned int logLevel;
+    static unsigned int logError;
+    static unsigned int logWarning;
+    static unsigned int logMessage;
 };

@@ -22,7 +22,7 @@ bool Renderer::Init(unsigned width, unsigned height)
         return false;
     }
 
-    if (!tex.LoadTexture( "textures/crate.png"))
+    if (!tex.LoadTexture( "Assets/Textures/crate.png"))
     {
         LOG_ERROR("Failed to load texture")
         return false;
@@ -30,7 +30,7 @@ bool Renderer::Init(unsigned width, unsigned height)
 
     vertexBuffer.Init();
     
-    if (!basicShader.LoadShaders( "shader/basic.vert", "shader/basic.frag"))
+    if (!basicShader.LoadShaders( "Shaders/basic.vert", "Shaders/basic.frag"))
     {
         LOG_ERROR("Failed to load shader")
         return false;

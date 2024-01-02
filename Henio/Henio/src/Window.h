@@ -1,7 +1,12 @@
 ﻿#pragma once
 
 #include <string>
+#include <memory>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Renderer.h"
+#include "Model.h"
+
 
 class Window
 {
@@ -20,4 +25,7 @@ private:
     void HandleMouseButtonEvents(int button, int action, int mods);
     
     GLFWwindow *window = nullptr;
+
+    std::unique_ptr<Renderer> renderer;
+    std::unique_ptr<Model> model;
 };

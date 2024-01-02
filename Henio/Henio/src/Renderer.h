@@ -20,9 +20,9 @@ public:
     void Draw();
     
 private:
-    Shader basicShader;
-    Framebuffer frameBuffer;
-    VertexBuffer vertexBuffer;
-    Texture tex;
+    Shader basicShader{};
+    Framebuffer frameBuffer{};
+    VertexBuffer vertexBuffer{};
+    Texture tex {};
     int triangleCount = 0;
 };

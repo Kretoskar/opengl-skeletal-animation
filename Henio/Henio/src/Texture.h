@@ -13,4 +13,9 @@ public:
 
 private:
     GLuint texture = 0;
+
+    int texWidth = 0;
+    int texHeight = 0;
+    int nChannels = 0;
+    std::string textureName;
 };

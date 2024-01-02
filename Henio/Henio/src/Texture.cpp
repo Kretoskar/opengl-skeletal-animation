@@ -1,13 +1,13 @@
 ﻿#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-#include "Texture.h"
 
+#include "Texture.h"
 #include "Logger.h"
 
 bool Texture::LoadTexture(std::string textureFilename)
 {
-    int texWidth, texHeight, nChannels;
-
+    textureName = textureFilename;
+    
     stbi_set_flip_vertically_on_load(true);
 
     unsigned char *textureData =
@@ -29,7 +29,8 @@ bool Texture::LoadTexture(std::string textureFilename)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData);
+   // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
 
     glGenerateMipmap(GL_TEXTURE_2D);
     

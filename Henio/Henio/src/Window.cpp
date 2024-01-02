@@ -8,6 +8,10 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
         LOG_ERROR("glfwInit() error")
         return false;
     }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     /* set a "hint" for the NEXT window created*/
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -55,23 +59,40 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
         w->HandleMouseButtonEvents(button, action, mods);
     });
     
+    renderer = std::make_unique<Renderer>();
+    if (!renderer->Init(width, height))
+    {
+        glfwTerminate();
+        LOG_ERROR("Could not init OpenGL renderer")
+        return false;
+    }
+
+    glfwSetWindowUserPointer(window, renderer.get());
+    glfwSetWindowSizeCallback(window, [](GLFWwindow *win, int width, int height)
+    {
+      auto renderer = static_cast<Renderer*>(glfwGetWindowUserPointer(win));
+      renderer->SetSize(width, height);
+    });
+
+    model = std::make_unique<Model>();
+    model->Init();
+
+    LOG_MESSAGE("Window with OpenGL 4.6 successfully initialized")
     return true;
 }
 
 void Window::MainLoop()
 {
+    /* force VSYNC */
     glfwSwapInterval(1);
-    float color = 0.0f;
-    
-    while (!glfwWindowShouldClose(window))
-    {
-        color >= 1.0f ? color = 0.0f : color += 0.01f;
-        glClearColor(color, color, color, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+    /* upload only once for now */
+    renderer->UploadData(model->GetVertexData());
+
+    while (!glfwWindowShouldClose(window)) {
+        renderer->Draw();
         
-         
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }

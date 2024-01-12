@@ -55,13 +55,15 @@ void Renderer::Cleanup()
 
 void Renderer::UploadData(Mesh vertexData)
 {
-    triangleCount = vertexData.vertices.size();
+    triangleCount = vertexData.vertices.size() / 3;
     vertexBuffer.UploadData(vertexData);
 }
 
 void Renderer::Draw()
 {
+    // bind framebuffer to let it receive vertex data
     frameBuffer.Bind();
+    // draw background color
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
@@ -69,7 +71,7 @@ void Renderer::Draw()
     basicShader.Use();
     tex.Bind();
     vertexBuffer.Bind();
-    vertexBuffer.Draw(GL_TRIANGLES, 0, triangleCount);
+    vertexBuffer.Draw(GL_TRIANGLES, 0, triangleCount * 3);
     vertexBuffer.Unbind();
     tex.Unbind();
     frameBuffer.Unbind();

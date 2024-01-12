@@ -2,14 +2,16 @@
 
 void VertexBuffer::Init()
 {
+    // VAO - contains VBOs
     glGenVertexArrays(1, &VAO);
+    // VBO - memory buffer containing vertex data (pos, normal, color...)
     glGenBuffers(1, &vertexVBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
 
+    // Vertex attrib pointer - defines where and how shaders can access vertex data
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, position)));
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, uv)));
-
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 

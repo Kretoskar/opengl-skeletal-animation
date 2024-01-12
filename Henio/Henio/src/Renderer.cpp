@@ -1,6 +1,7 @@
 ﻿#include "Renderer.h"
 
 #include "Logger.h"
+#include "Window.h"
 
 bool Renderer::Init(unsigned width, unsigned height)
 {
@@ -35,6 +36,12 @@ bool Renderer::Init(unsigned width, unsigned height)
         LOG_ERROR("Failed to load shader")
         return false;
     }
+
+    if (!changedShader.LoadShaders( "Shaders/changed.vert", "Shaders/changed.frag"))
+    {
+        LOG_ERROR("Failed to load shader")
+        return false;
+    }
     
     return true;
 }
@@ -48,6 +55,7 @@ void Renderer::SetSize(unsigned width, unsigned height)
 void Renderer::Cleanup()
 {
     basicShader.Cleanup();
+    changedShader.Cleanup();
     tex.Cleanup();
     vertexBuffer.Cleanup();
     frameBuffer.Cleanup();
@@ -68,7 +76,14 @@ void Renderer::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
 
-    basicShader.Use();
+    if (useChangedShader)
+    {
+        changedShader.Use();
+    } else
+    {
+        basicShader.Use();
+    }
+    
     tex.Bind();
     vertexBuffer.Bind();
     vertexBuffer.Draw(GL_TRIANGLES, 0, triangleCount * 3);
@@ -77,4 +92,12 @@ void Renderer::Draw()
     frameBuffer.Unbind();
 
     frameBuffer.DrawToScreen();
+}
+
+void Renderer::HandleKeyEvents(int key, int scancode, int action, int mods)
+{
+    if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        useChangedShader = !useChangedShader;
+    }
 }

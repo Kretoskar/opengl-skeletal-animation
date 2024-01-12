@@ -231,6 +231,8 @@
   <ItemGroup>
     <Content Include="Shaders\basic.frag" />
     <Content Include="Shaders\basic.vert" />
+    <Content Include="Shaders\changed.frag" />
+    <Content Include="Shaders\changed.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

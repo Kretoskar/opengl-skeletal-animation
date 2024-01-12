@@ -58,8 +58,15 @@ bool Window::Init(unsigned int width, unsigned int height, std::string title)
         const auto w = static_cast<Window*>(glfwGetWindowUserPointer(win));
         w->HandleMouseButtonEvents(button, action, mods);
     });
+
+    glfwSetKeyCallback(window, [](GLFWwindow* win, int key, int scancode, int action, int mods)
+    {
+        auto renderer = static_cast<Renderer*>
+        (glfwGetWindowUserPointer(win));
+        renderer->HandleKeyEvents(key, scancode, action, mods);
+    });
     
-    renderer = std::make_unique<Renderer>();
+    renderer = std::make_unique<Renderer>(this);
     if (!renderer->Init(width, height))
     {
         glfwTerminate();

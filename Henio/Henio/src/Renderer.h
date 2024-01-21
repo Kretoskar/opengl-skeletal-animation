@@ -9,13 +9,14 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "RenderData.h"
+#include "UserInterface.h"
 
 class Window;
 
 class Renderer
 {
 public:
-    Renderer(Window* window) : window(window) {}
+    Renderer(Window* window);
     
     bool Init(unsigned int width, unsigned int height);
     void SetSize(unsigned int width, unsigned int height);
@@ -31,9 +32,9 @@ private:
     Framebuffer frameBuffer{};
     VertexBuffer vertexBuffer{};
     Texture tex {};
-    int triangleCount = 0;
 
     bool useChangedShader = false;
 
-    Window* window;
+    RenderData renderData{};
+    UserInterface userInterface{};
 };

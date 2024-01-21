@@ -9,6 +9,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stb/stb_image.h>
 
+#include <string>
+
 #include "Logger.h"
 #include "Window.h"
 

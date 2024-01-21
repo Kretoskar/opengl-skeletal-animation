@@ -3,8 +3,16 @@
 #include "Logger.h"
 #include "Window.h"
 
+Renderer::Renderer(Window* window)
+{
+    renderData.window = window;
+}
+
 bool Renderer::Init(unsigned width, unsigned height)
 {
+    renderData.width = width;
+    renderData.height = height;
+    
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         LOG_ERROR("GLLoader failed to load")
@@ -42,12 +50,15 @@ bool Renderer::Init(unsigned width, unsigned height)
         LOG_ERROR("Failed to load shader")
         return false;
     }
-    
+
+    userInterface.Init(renderData);
     return true;
 }
 
 void Renderer::SetSize(unsigned width, unsigned height)
 {
+    renderData.width = width;
+    renderData.height = height;
     frameBuffer.Resize(width, height);
     glViewport(0, 0, width, height);
 }
@@ -59,11 +70,12 @@ void Renderer::Cleanup()
     tex.Cleanup();
     vertexBuffer.Cleanup();
     frameBuffer.Cleanup();
+    userInterface.Cleanup();
 }
 
 void Renderer::UploadData(Mesh vertexData)
 {
-    triangleCount = vertexData.vertices.size() / 3;
+    renderData.triangleCount = vertexData.vertices.size() / 3;
     vertexBuffer.UploadData(vertexData);
 }
 
@@ -86,17 +98,19 @@ void Renderer::Draw()
     
     tex.Bind();
     vertexBuffer.Bind();
-    vertexBuffer.Draw(GL_TRIANGLES, 0, triangleCount * 3);
+    vertexBuffer.Draw(GL_TRIANGLES, 0, renderData.triangleCount * 3);
     vertexBuffer.Unbind();
     tex.Unbind();
     frameBuffer.Unbind();
 
     frameBuffer.DrawToScreen();
+    userInterface.CreateFrame(renderData);
+    userInterface.Render();
 }
 
 void Renderer::HandleKeyEvents(int key, int scancode, int action, int mods)
 {
-    if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (glfwGetKey(renderData.window->GetGLFWWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
     {
         useChangedShader = !useChangedShader;
     }

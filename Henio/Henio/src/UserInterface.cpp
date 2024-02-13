@@ -33,7 +33,7 @@ void UserInterface::CreateFrame(RenderData& renderData)
         "x" +
         std::to_string(renderData.height);
     ImGui::Text("Window Dimensions: ");
-    ImGui::Text("Window Dimensions raz dwa: ");
+    ImGui::Text("żaba Dimensions raz dwa: ");
     ImGui::SameLine();
     ImGui::Text(windowDims.c_str());
 

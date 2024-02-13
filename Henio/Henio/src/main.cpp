@@ -61,7 +61,7 @@ int main()
 	
 	Shader shader("assets/vertex_core.glsl", "assets/fragment_core.glsl");
 
-	Model model(glm::vec3(0, 0, -5), glm::vec3(0.05f));
+	Model model(glm::vec3(0, 0, -15), glm::vec3(0.05f));
 	model.LoadModel("assets/models/monke/scene.gltf");
 
 	SpotLight spotLight =

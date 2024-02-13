@@ -24,7 +24,7 @@ void UserInterface::CreateFrame(RenderData& renderData)
     ImGui::SetNextWindowBgAlpha(0.8f);
     ImGui::Begin("Info", nullptr, imguiWindowFlags);
 
-    ImGui::Text("Trojkaty:");
+    ImGui::Text("Triangles:");
     ImGui::SameLine();
     ImGui::Text(std::to_string(renderData.triangleCount).c_str());
 
